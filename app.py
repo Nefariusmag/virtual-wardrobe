@@ -11,6 +11,7 @@ class User(object):
         self.lang = request.accept_languages[0][0]
         self.ip = self.get_user_ip()
         self.geo = self.get_user_geo()
+        self.city = '{},{}'.format(self.geo['city'], self.geo['country_code2'])
 
     def get_user_ip(self):
         _ip = request.environ['REMOTE_ADDR']
