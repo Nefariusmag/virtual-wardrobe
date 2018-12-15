@@ -101,8 +101,8 @@ class Weather(object):
 @app.route('/')
 def hello_world():
     user = User()
-    _weather = user.Weather('Moscow,ru', user.lang)
-    return str(_weather) + str(user.ip)
+    weather = Weather(user.city, user.lang)
+    return 'Weather: {}<br/>Your IP: {}<br/>You city: {}'.format(str(weather), str(user.ip), str(user.city))
 
 
 if __name__ == '__main__':
