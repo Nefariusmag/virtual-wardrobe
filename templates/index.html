@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>Weather right now</title>
+    <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .column_left {
+        float: left;
+        width: 20%;
+        padding: 10px;
+    }
+
+    .column_central {
+        float: left;
+        width: 80%;
+        padding: 10px;
+        color: white;
+    }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <div class="column_left" style="background-color:#ccc;" >
+            <h1>
+              Info about you
+            </h1>
+            {% if weather and user_ip and user_city  %}
+            Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}
+            {% else %}
+            Now, it can't work
+            {% endif %}
+        </div>
+        <div class="column_central" style="background:green;">
+            <h1>
+                Our advice
+            </h1>
+            -<br/>
+            -<br/>
+            -
+        </div>
+    </div>
+
+</body>
+</html>

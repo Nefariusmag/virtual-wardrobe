@@ -1,7 +1,5 @@
 import requests
-# import json
-# import flask
-from flask import request, Flask
+from flask import request, Flask, render_template
 
 app = Flask(__name__)
 
@@ -29,6 +27,7 @@ class User(object):
         return _ip
 
     def get_srv_ip(self):
+        # todo add try to take error if api.ipify.org is not working
         _ip = requests.get('https://api.ipify.org')
         if _ip.status_code == 200:
             _ip = _ip.text
@@ -102,7 +101,11 @@ class Weather(object):
 def hello_world():
     user = User()
     weather = Weather(user.city, user.lang)
-    return 'Weather: {}<br/>Your IP: {}<br/>You city: {}'.format(str(weather), str(user.ip), str(user.city))
+    return render_template('index.html', weather=str(weather), user_ip=str(user.ip), user_city=user.city)
+    # weather = 'Weather: Mist, mist -11.2 92 '
+    # user_ip = '46.39.56.28'
+    # user_city = 'Moscow,RU'
+    # return render_template('index.html', weather=str(weather), user_ip=str(user_ip), user_city=user_city)
 
 
 if __name__ == '__main__':
