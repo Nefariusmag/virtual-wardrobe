@@ -1,3 +1,6 @@
 # 1.0.0
 
-Create databases `users` and `clothes`
+Create:
+- database.py with DB `users` and `clothes`
+- app.py with info about weather and city from IP
+- config.py with tokens and keys
