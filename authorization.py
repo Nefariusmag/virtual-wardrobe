@@ -2,6 +2,8 @@ from flask import Flask, Response, redirect, request, abort
 from flask_login import LoginManager, UserMixin, \
     login_required, login_user, logout_user
 
+from flask import render_template
+
 app = Flask(__name__)
 
 # config
@@ -36,7 +38,7 @@ users = [User(id) for id in range(1, 21)]
 @app.route('/')
 @login_required
 def home():
-    return Response("Hello World!")
+    return render_template('main.html', user_login=user.name)
 
 
 # somewhere to login
@@ -47,20 +49,14 @@ def login():
         password = request.form['password']
         if password == username + "_secret":
             id = username.split('user')[1]
+            global user
             user = User(id)
             login_user(user)
             return redirect(request.args.get("next"))
         else:
             return abort(401)
     else:
-        return Response('''
-        <form action="" method="post">
-            <p><input type=text name=username>
-            <p><input type=password name=password>
-            <p><input type=submit value=Login>
-        </form>
-        ''')
-
+        return render_template('main.html')
 
 # somewhere to logout
 @app.route("/logout")

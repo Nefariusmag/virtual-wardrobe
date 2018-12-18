@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>Weather right now</title>
+</head>
+
+<body>
+<h1>
+Info about you
+</h1>
+{% if user_login  %}
+Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
+<h1>You ({{user_login}}) in!</h1>
+{% else %}
+Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
+<h1>Login</h1>
+<form action="" method="post">
+    <p><input type=text name=username>
+    <p><input type=password name=password>
+    <p><input type=submit value=Login>
+</form>
+{% endif %}
+</body>
+</html>
