@@ -21,17 +21,17 @@ login_manager.login_view = "login"
 # silly user model
 class User(UserMixin):
 
-    def __init__(self, id):
+    def __init__(self, id, name, password):
         self.id = id
-        self.name = "user" + str(id)
-        self.password = self.name + "_secret"
+        self.name = name
+        self.password = password
 
     def __repr__(self):
         return "%d/%s/%s" % (self.id, self.name, self.password)
 
 
-# create some users with ids 1 to 20
-users = [User(id) for id in range(1, 21)]
+# create some users with ids 1 to 5
+users = User(0, 'admin', 'password')
 
 
 # some protected url
@@ -45,18 +45,38 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if password == username + "_secret":
-            id = username.split('user')[1]
-            global user
-            user = User(id)
+        try:
+            username = request.form['username']
+            password = request.form['password']
+            # if password == username + "_secret":
+            # id = username.split('user')[1]
+            # global user
+            user = User(1, username, password)
             login_user(user)
             return redirect(request.args.get("next"))
-        else:
+        except ():
             return abort(401)
     else:
         return render_template('main.html')
+
+
+@app.route("/registration", methods=["GET", "POST"])
+def registration():
+    if request.method == 'POST':
+        id = request.form['id']
+        username = request.form['username']
+        password = request.form['password']
+        if username != '' and password != '' and password != '':
+            global user
+            user = User(id, username, password)
+            # login_user(user)
+            # return redirect(request.args.get("next"))
+            return redirect('/login')
+        else:
+            return abort(401)
+    else:
+        return render_template('registration.html')
+
 
 # somewhere to logout
 @app.route("/logout")
@@ -74,8 +94,8 @@ def page_not_found(e):
 
 # callback to reload the user object
 @login_manager.user_loader
-def load_user(userid):
-    return User(userid)
+def load_user(id, username, password):
+    return User(id, username, password)
 
 
 if __name__ == "__main__":

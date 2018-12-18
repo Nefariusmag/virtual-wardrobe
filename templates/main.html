@@ -10,6 +10,7 @@ Info about you
 {% if user_login  %}
 Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
 <h1>You ({{user_login}}) in!</h1>
+<a class="p-2 text-dark" href="/loguot">logout</a>
 {% else %}
 Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
 <h1>Login</h1>
@@ -18,6 +19,8 @@ Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
     <p><input type=password name=password>
     <p><input type=submit value=Login>
 </form>
+<h1>Registration</h1>
+<a class="p-2 text-dark" href="/registration">Registration</a>
 {% endif %}
 </body>
 </html>
