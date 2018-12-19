@@ -171,6 +171,7 @@ def login():
 
 @app.route('/registration', methods=['GET', 'POST'])
 def register():
+    # todo add exception if you try to registration user that already exist
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
