@@ -4,26 +4,28 @@
 </head>
 
 <body>
-<h1>
-Info about you
-</h1>
 {% if user_login  %}
-Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
-<h1>You ({{user_login}}) in!</h1>
-<a class="p-2 text-dark" href="/logout">logout</a>
+    <h1>Info about you</h1>
+    <h3>You ({{user_login}}) in! <br/>
+    <a class="p-2 text-dark" href="/logout">logout</a>
+    </h3>
+        {% if weather and user_ip and user_city  %}
+        Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}<br/>
+        {% else %}
+        Now, it can't work
+        {% endif %}
 {% else %}
-Weather: Winter is coming <br/>Your IP: 127.0.0.1<br/>You city: Moscow<br/>
-<h1>Login</h1>
-<form action="" method="post">
-    <p><input type=text name=username>
-    <p><input type=password name=password>
-    <p><input type=submit value=Login>
-</form>
-{% if login_fail  %}
-<span style="font-size: medium; color: red; ">Login failed</span>
-{% endif %}
-<h1>Registration</h1>
-<a class="p-2 text-dark" href="/registration">Registration</a>
+    <h1>Login</h1>
+    <form action="" method="post">
+        <p><input type=text name=username>
+        <p><input type=password name=password>
+        <p><input type=submit value=Login>
+    </form>
+    {% if login_fail  %}
+        <span style="font-size: medium; color: red; ">Login failed</span>
+    {% endif %}
+    <h1>Registration</h1>
+    <a class="p-2 text-dark" href="/registration">Registration</a>
 {% endif %}
 </body>
 </html>
