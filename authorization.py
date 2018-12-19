@@ -1,81 +1,105 @@
-from flask import Flask, Response, redirect, request, abort
-from flask_login import LoginManager, UserMixin, \
-    login_required, login_user, logout_user
-
-from flask import render_template
+from flask import Flask, request, abort, redirect, render_template
+from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 
 app = Flask(__name__)
-
-# config
-app.config.update(
-    DEBUG=True,
-    SECRET_KEY='secret_xxx'
-)
-
-# flask-login
+app.config['SECRET_KEY'] = 'secret_key'
 login_manager = LoginManager()
-login_manager.init_app(app)
 login_manager.login_view = "login"
+login_manager.init_app(app)
 
 
-# silly user model
 class User(UserMixin):
-
-    def __init__(self, id, name, password):
+    def __init__(self, username, password, id, active=True):
         self.id = id
-        self.name = name
+        self.username = username
         self.password = password
+        self.active = active
 
-    def __repr__(self):
-        return "%d/%s/%s" % (self.id, self.name, self.password)
+    def get_id(self):
+        return self.id
+
+    def is_active(self):
+        return self.active
+
+    def get_auth_token(self):
+        return make_secure_token(self.username, key='secret_key')
 
 
-# create some users with ids 1 to 5
-users = User(0, 'admin', 'password')
+class UsersRepository:
+
+    def __init__(self):
+        self.users = dict()
+        self.users_id_dict = dict()
+        self.identifier = 0
+
+    def save_user(self, user):
+        self.users_id_dict.setdefault(user.id, user)
+        self.users.setdefault(user.username, user)
+
+    def get_user(self, username):
+        return self.users.get(username)
+
+    def get_user_by_id(self, userid):
+        return self.users_id_dict.get(userid)
+
+    def next_index(self):
+        self.identifier += 1
+        return self.identifier
 
 
-# some protected url
+users_repository = UsersRepository()
+
+
 @app.route('/')
 @login_required
-def home():
-    return render_template('main.html', user_login=user.name)
+def index():
+    return render_template('index.html', user_login=registeredUser.username)
 
 
-# somewhere to login
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         try:
             username = request.form['username']
             password = request.form['password']
-            # if password == username + "_secret":
-            # id = username.split('user')[1]
-            # global user
-            user = User(1, username, password)
-            login_user(user)
-            return redirect(request.args.get("next"))
-        except ():
+            global registeredUser
+            registeredUser = users_repository.get_user(username)
+            print('Users ' + str(users_repository.users))
+            print('Register user %s , password %s' % (registeredUser.username, registeredUser.password))
+            if registeredUser != None and registeredUser.password == password:
+                print('Logged in..')
+                login_user(registeredUser)
+                return redirect('/')
+            else:
+                return abort(401)
+        except(AttributeError):
             return abort(401)
     else:
-        return render_template('main.html')
+        return render_template('index.html')
 
 
-@app.route("/registration", methods=["GET", "POST"])
-def registration():
+@app.route('/registration', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
-        id = request.form['id']
         username = request.form['username']
         password = request.form['password']
-        if username != '' and password != '' and password != '':
-            global user
-            user = User(id, username, password)
-            # login_user(user)
-            # return redirect(request.args.get("next"))
-            return redirect('/login')
-        else:
-            return abort(401)
+        new_user = User(username, password, users_repository.next_index())
+        users_repository.save_user(new_user)
+        return redirect('/')
     else:
         return render_template('registration.html')
+
+
+# handle login failed
+@app.errorhandler(401)
+def page_not_found(e):
+    return render_template('index.html', login_fail=True)
+
+
+# callback to reload the user object
+@login_manager.user_loader
+def load_user(userid):
+    return users_repository.get_user_by_id(userid)
 
 
 # somewhere to logout
@@ -83,20 +107,8 @@ def registration():
 @login_required
 def logout():
     logout_user()
-    return Response('<p>Logged out</p>')
+    return redirect('/')
 
 
-# handle login failed
-@app.errorhandler(401)
-def page_not_found(e):
-    return Response('<p>Login failed</p>')
-
-
-# callback to reload the user object
-@login_manager.user_loader
-def load_user(id, username, password):
-    return User(id, username, password)
-
-
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=True)
