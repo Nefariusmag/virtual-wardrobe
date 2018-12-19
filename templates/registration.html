@@ -1,15 +1,32 @@
 <html>
 <head>
-<title>Registration</title>
+    <title>Registration</title>
+    <style>
+        body {
+            margin-left: 200px;
+            margin-top: 100px;
+            font: 18px Inconsolata;
+            color: black;
+        }
+        * {
+            box-sizing: border-box;
+            background-color: #F4F5F4;
+            font-family: Inconsolata;
+        }
+        h1 {
+            font: 250% Inconsolata;
+            font-weight: normal;
+        }
+    </style>
 </head>
 
 <body>
-<h1>Registration</h1>
-Write your name and pass<br/>
-<form action="" method="post">
-<p><input type=text name=username placeholder="Enter username">
-<p><input type=password name=password placeholder="Enter password">
-<p><input type=submit value=Login>
-</form>
+    <h1><span style="background-color: black; color: white; white-space: pre"> Registration </span></h1>
+    Write your name and password or <a href="/">go back</a>
+    <form action="" method="post">
+        <p><input type=text name=username placeholder="Enter username">
+        <p><input type=password name=password placeholder="Enter password">
+        <p><input type=submit value=Login>
+    </form>
 </body>
 </html>
