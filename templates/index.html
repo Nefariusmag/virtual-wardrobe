@@ -1,0 +1,54 @@
+<html>
+<head>
+    <title>Weather right now</title>
+    <style>
+    body {
+        margin-left: 200px;
+        margin-top: 150px;
+    }
+    * {
+        box-sizing: border-box;
+        background-color: #F4F5F4;
+        font-family: Inconsolata;
+    }
+    h1 {
+        font: 250% Inconsolata;
+        font-weight: normal;
+    }
+    .column_left {
+        float: left;
+        width: 30%;
+        font: 18px Inconsolata;
+        margin-right: 50px;
+        line-height: 1.7;
+    }
+    .column_central {
+        float: left;
+        margin-left: 150px;
+        font: 18px Inconsolata;
+        line-height: 1.7;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <div class="column_left" >
+            <h1>
+                Info about <span style="background-color: black; color: white; white-space: pre"> you </span>
+            </h1>
+            {% if weather and user_ip and user_city  %}
+            Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}
+            {% else %}
+            Now, it can't work
+            {% endif %}
+        </div>
+        <div class="column_central">
+            <h1>Our <span style="background-color: black; color: white; white-space: pre"> advice </span> </h1>
+            -<br/>
+            -<br/>
+            -
+        </div>
+    </div>
+</body>
+</html>
