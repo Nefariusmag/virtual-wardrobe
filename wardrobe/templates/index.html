@@ -37,8 +37,8 @@
             <h1>
                 Info about <span style="background-color: black; color: white; white-space: pre"> you </span>
             </h1>
-            {% if weather and user_ip and user_city  %}
-            Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}
+            {% if weather and user %}
+            Weather: {{weather}}<br/>Your IP: {{user.ip}}<br/>You city: {{user.city}}
             {% else %}
             Now, it can't work
             {% endif %}
