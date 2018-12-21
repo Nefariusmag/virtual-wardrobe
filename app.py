@@ -10,11 +10,10 @@ login_manager.init_app(app)
 
 
 class User(UserMixin):
-    def __init__(self, username, password, id, active=True):
+    def __init__(self, username, password, id):
         self.id = id
         self.username = username
         self.password = password
-        self.active = active
         self.lang = request.accept_languages[0][0]
         self.ip = self.get_user_ip()
         self.geo = self.get_user_geo()
@@ -22,12 +21,6 @@ class User(UserMixin):
 
     def get_id(self):
         return self.id
-
-    def is_active(self):
-        return self.active
-
-    def get_auth_token(self):
-        return make_secure_token(self.username, key='secret_key')
 
     def get_user_ip(self):
         _ip = request.environ['REMOTE_ADDR']
@@ -65,8 +58,8 @@ class User(UserMixin):
 
         return user_geo
 
-class UsersRepository:
 
+class UsersRepository:
     def __init__(self):
         self.users = dict()
         self.users_id_dict = dict()
