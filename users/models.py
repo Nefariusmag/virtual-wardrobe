@@ -1,13 +1,20 @@
 import requests
 from flask import request
+from flask_login import UserMixin
 
 
-class User(object):
-    def __init__(self):
+class User(UserMixin):
+    def __init__(self, username, password, uid):
+        self.uid = uid
+        self.username = username
+        self.password = password
         self.lang = request.accept_languages[0][0]
         self.ip = self.get_user_ip()
         self.geo = self.get_user_geo()
         self.city = '{},{}'.format(self.geo['city'], self.geo['country_code2'])
+
+    def get_id(self):
+        return self.uid
 
     def get_user_ip(self):
         _ip = request.environ['REMOTE_ADDR']
@@ -25,6 +32,7 @@ class User(object):
         return _ip
 
     def get_srv_ip(self):
+        # todo add try to take error if api.ipify.org is not working
         _ip = requests.get('https://api.ipify.org')
         if _ip.status_code == 200:
             _ip = _ip.text
@@ -43,3 +51,24 @@ class User(object):
             user_geo = user_geo.json()
 
         return user_geo
+
+
+class UsersRepository:
+    def __init__(self):
+        self.users = dict()
+        self.users_id_dict = dict()
+        self.identifier = 0
+
+    def save_user(self, user):
+        self.users_id_dict.setdefault(user.uid, user)
+        self.users.setdefault(user.username, user)
+
+    def get_user(self, username):
+        return self.users.get(username)
+
+    def get_user_by_id(self, userid):
+        return self.users_id_dict.get(userid)
+
+    def next_index(self):
+        self.identifier += 1
+        return self.identifier
