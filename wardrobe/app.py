@@ -19,7 +19,6 @@ def create_app():
     @login_required
     def index():
         weather = Weather(registeredUser.city, registeredUser.lang)
-        print(f'user_login={registeredUser.username}, weather={str(weather)}, user_ip={str(registeredUser.ip)}, user_city={registeredUser.city}')
         return render_template('index.html', user_login=registeredUser.username, weather=str(weather),
                                user_ip=str(registeredUser.ip), user_city=registeredUser.city)
 
@@ -43,7 +42,7 @@ def create_app():
             except(AttributeError):
                 return abort(401)
         else:
-            return render_template('index.html')
+            return render_template('login.html')
 
     @app.route('/registration', methods=['GET', 'POST'])
     def register():
@@ -63,9 +62,7 @@ def create_app():
             city = request.form['city']
             country = request.form['country']
             location = f'{city},{country}'
-            print(location)
             registeredUser.city = location
-            print(registeredUser.city)
             return redirect('/')
         else:
             return render_template('location.html')
@@ -73,7 +70,7 @@ def create_app():
     # handle login failed
     @app.errorhandler(401)
     def page_not_found(e):
-        return render_template('index.html', login_fail=True)
+        return render_template('login.html', login_fail=True)
 
     # callback to reload the user object
     @login_manager.user_loader
