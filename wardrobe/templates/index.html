@@ -45,7 +45,8 @@
         </h1>
         </h3>
         {% if weather and user_ip and user_city %}
-        Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}
+        Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city:
+        <a href="/location"><p style="color: black"><u>{{user_city}}</u></p></a>
         {% else %}
         Now, it can't work
         {% endif %}

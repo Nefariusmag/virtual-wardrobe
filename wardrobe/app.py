@@ -19,6 +19,7 @@ def create_app():
     @login_required
     def index():
         weather = Weather(registeredUser.city, registeredUser.lang)
+        print(f'user_login={registeredUser.username}, weather={str(weather)}, user_ip={str(registeredUser.ip)}, user_city={registeredUser.city}')
         return render_template('index.html', user_login=registeredUser.username, weather=str(weather),
                                user_ip=str(registeredUser.ip), user_city=registeredUser.city)
 
@@ -55,6 +56,19 @@ def create_app():
             return redirect('/')
         else:
             return render_template('registration.html')
+
+    @app.route('/location', methods=['GET', 'POST'])
+    def change_location():
+        if request.method == 'POST':
+            city = request.form['city']
+            country = request.form['country']
+            location = f'{city},{country}'
+            print(location)
+            registeredUser.city = location
+            print(registeredUser.city)
+            return redirect('/')
+        else:
+            return render_template('location.html')
 
     # handle login failed
     @app.errorhandler(401)
