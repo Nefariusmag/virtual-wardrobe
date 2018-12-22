@@ -1,7 +1,8 @@
-from weather import Weather
-from users.models import User, UsersRepository
 from flask import Flask, request, abort, redirect, render_template
-from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
+from flask_login import LoginManager, login_required, login_user, logout_user
+
+from users.models import User, UsersRepository
+from weather import Weather
 
 
 def create_app():

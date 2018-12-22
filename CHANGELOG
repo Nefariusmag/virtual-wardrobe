@@ -1,3 +1,14 @@
+# 1.0.1
+
+Create:
+1. Create folder templates with html pages (registration.html and index.html).
+2. Add in app.py:
+- libs for authorization
+- vars user and pass in class User
+- class UsersRepository for save logn-pass
+- def for login, home, registration, logout, page_error
+3. Fabric for project.
+
 # 1.0.0
 
 Create:
