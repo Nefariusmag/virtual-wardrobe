@@ -37,24 +37,25 @@
 </head>
 
 <body>
+{{ _('Test') }}
 {% if user_login %}
-<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black;">Logout</p></a>
+<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black;">{{ _('Logout') }}</p></a>
 <div class="row">
     <div class="column_left">
-        <h1>Info about <span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span>
-        </h1>
-        </h3>
+        <h1>{{ _('Info about ') }}<span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span></h1>
         {% if weather and user_ip and user_city %}
-        Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}
+        {{ _('Weather: ') }} {{weather}}<br/>
+        {{ _('Your IP: ') }} {{user_ip}}<br/>
+        {{ _('You city: ') }} {{user_city}}
         {% else %}
-        Now, it can't work
+        {{ _('Now, it can't work') }}
         {% endif %}
     </div>
     <div class="column_central">
-        <h1>Our <span style="background-color: black; color: white; white-space: pre"> advice </span></h1>
-        -<br/>
-        -<br/>
-        -
+        <h1>{{ _('Our ') }}<span style="background-color: black; color: white; white-space: pre">{{ _(' advice ') }}</span></h1>
+         -<br/>
+         -<br/>
+         -
     </div>
 </div>
 
@@ -62,20 +63,20 @@
 <div class="row">
     <div class="column_left">
         <!--todo Login and Registration on one line on row-->
-        <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;"> Login </span></h1>
+        <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Login ')}}</span></h1>
         <form action="" method="post">
             <p><input type=text name=username>
             <p><input type=password name=password>
             <p><input type=submit value=Login>
         </form>
         {% if login_fail %}
-        <span style="font-size: medium; color: red; ">Login failed</span>
+        <span style="font-size: medium; color: red; ">{{ _('Login failed') }}</span>
         {% endif %}
     </div>
     <div class="column_central">
-        <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;"> Registration </span>
+        <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Registration ') }}</span>
         </h1>
-        <a href="/registration"><p style="text-align: left; font: 18px Inconsolata; color: black">Registration</p></a>
+        <a href="/registration"><p style="text-align: left; font: 18px Inconsolata; color: black">{{ _('Registration') }}</p></a>
     </div>
 </div>
 {% endif %}
