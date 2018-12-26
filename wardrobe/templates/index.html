@@ -37,7 +37,6 @@
 </head>
 
 <body>
-{{ _('Test') }}
 {% if user_login %}
 <a href="/logout"><p style="margin-right: -500px; text-align: center; color: black;">{{ _('Logout') }}</p></a>
 <div class="row">
@@ -48,7 +47,7 @@
         {{ _('Your IP: ') }} {{user_ip}}<br/>
         {{ _('You city: ') }} {{user_city}}
         {% else %}
-        {{ _('Now, it can't work') }}
+        {{ _('Now, it can\'t work') }}
         {% endif %}
     </div>
     <div class="column_central">
