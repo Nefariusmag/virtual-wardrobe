@@ -29,9 +29,9 @@
 
 {{ _('Write your name and password or ') }}<a href="/">{{ _('go back') }}</a>
 <form action="" method="post">
-    <p><input type=text name=username placeholder="Enter username">
-    <p><input type=password name=password placeholder="Enter password">
-    <p><input type=submit value=Login>
+    <p><input type=text name=username placeholder="{{ _('Enter username') }}">
+    <p><input type=password name=password placeholder="{{ _('Enter password') }}">
+    <p><input type=submit value="{{ _('Login') }}">
 </form>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

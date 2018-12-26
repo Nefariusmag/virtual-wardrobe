@@ -64,9 +64,9 @@
         <!--todo Login and Registration on one line on row-->
         <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Login ')}}</span></h1>
         <form action="" method="post">
-            <p><input type=text name=username>
-            <p><input type=password name=password>
-            <p><input type=submit value=Login>
+            <p><input type=text name="username">
+            <p><input type=password name="password">
+            <p><input type=submit value="{{ _('Login') }}">
         </form>
         {% if login_fail %}
         <span style="font-size: medium; color: red; ">{{ _('Login failed') }}</span>

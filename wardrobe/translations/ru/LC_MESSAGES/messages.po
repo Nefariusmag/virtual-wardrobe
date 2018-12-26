@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-12-26 20:47+0300\n"
+"POT-Creation-Date: 2018-12-26 21:28+0300\n"
 "PO-Revision-Date: 2018-12-26 20:48+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -55,6 +55,10 @@ msgstr " совет "
 msgid " Login "
 msgstr " Авторизация "
 
+#: wardrobe/templates/index.html:69 wardrobe/templates/registration.html:34
+msgid "Login"
+msgstr "Добавить"
+
 #: wardrobe/templates/index.html:72
 msgid "Login failed"
 msgstr "Авторизация не удачная"
@@ -75,3 +79,10 @@ msgstr "Напишите ваше имя и пароль или "
 msgid "go back"
 msgstr "вернитесь обратно"
 
+#: wardrobe/templates/registration.html:32
+msgid "Enter username"
+msgstr "Введите логин"
+
+#: wardrobe/templates/registration.html:33
+msgid "Enter password"
+msgstr "Введите пароль"
