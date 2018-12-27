@@ -76,23 +76,23 @@ def create_app():
     @app.route('/add_clothes', methods=['GET', 'POST'])
     def add_clothes():
         if request.method == 'POST':
-            try:
-                print(registeredUser.username)
-                user = users_repository.get_id_by_user(registeredUser.username)
-                user_id = user.uid
-                clothes_name = request.form['clothes_name']
-                type = request.form['type'] is not ''
-                top = request.form.get('top') is not None
-                bottom = request.form.get('bottom') is not None
-                upper = request.form.get('upper') is not None
-                lower = request.form.get('lower') is not None
-                temp_min = request.form['temp_min']
-                temp_max = request.form['temp_max']
+            print(registeredUser.username)
+            user = users_repository.get_id_by_user(registeredUser.username)
+            user_id = user.uid
+            clothes_name = request.form['clothes_name']
+            type = request.form['type']
+            top = request.form.get('top') is not None
+            bottom = request.form.get('bottom') is not None
+            upper = request.form.get('upper') is not None
+            lower = request.form.get('lower') is not None
+            temp_min = request.form['temp_min']
+            temp_max = request.form['temp_max']
+            if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
+                return render_template('add_clothes.html', add_clothes_fail=True)
+            else:
                 print(f'{user_id}, {clothes_name}, {type}, {top}, {bottom}, {upper}, {lower}, {temp_min}, {temp_max}')
                 # new_clothes = Clothes(username_id, clothes_name, type, top, bottom, upper, lower, temp_min, temp_max)
                 return redirect('/add_clothes')
-            except():
-                return render_template('add_clothes.html', add_clothes_fail='fail')
         else:
             return render_template('add_clothes.html')
 
