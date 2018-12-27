@@ -72,4 +72,23 @@ def create_app():
     def logout():
         logout_user()
         return redirect('/')
+
+    @app.route('/add_clothes', methods=['GET', 'POST'])
+    def add_clothes():
+        if request.method == 'POST':
+            username_id = users_repository.get_user(registeredUser.username)
+            clothes_name = request.form['clothes_name']
+            type = request.form['type']
+            top = request.form['top']
+            bottom = request.form['bottom']
+            upper = request.form['upper']
+            lower = request.form['lower']
+            temp_min = request.form['temp_min']
+            temp_max = request.form['temp_max']
+            print(f'{username_id}, {clothes_name}, {type}, {top}, {bottom}, {upper}, {lower}, {temp_min}, {temp_max}')
+            # new_clothes = Clothes(username_id, clothes_name, type, top, bottom, upper, lower, temp_min, temp_max)
+            return redirect('/add_clothes')
+        else:
+            return render_template('add_clothes.html')
+
     return app

@@ -66,6 +66,9 @@ class UsersRepository:
     def get_user(self, username):
         return self.users.get(username)
 
+    def get_id_by_user(self, username):
+        return self.identifier.get(username)
+
     def get_user_by_id(self, userid):
         return self.users_id_dict.get(userid)
 
