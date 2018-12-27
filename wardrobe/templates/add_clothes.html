@@ -49,10 +49,10 @@ Write information about your clothes:
       <th scope="row"><input type=text name=clothes_name placeholder="Enter clothes name"></th>
         <!--todo list of types-->
       <td><input type=text name=type placeholder="Enter type"></td>
-      <td><input type=checkbox name=top placeholder="Enter top"></td>
-      <td><input type=checkbox name=bottom placeholder="Enter bottom"></td>
-      <td><input type=checkbox name=upper placeholder="Enter upper"></td>
-      <td><input type=checkbox name=lower placeholder="Enter lower"></td>
+      <td><input type=checkbox name=top></td>
+      <td><input type=checkbox name=bottom></td>
+      <td><input type=checkbox name=upper></td>
+      <td><input type=checkbox name=lower></td>
       <td><input type=number name=temp_min placeholder="Enter temperature min"></td>
       <td><input type=number name=temp_max placeholder="Enter temperature max"></td>
     </tr>
@@ -61,6 +61,9 @@ Write information about your clothes:
     <input type=submit value="Add clothes">
 </form>
 <br/>
+{% if add_clothes_fail %}
+<span style="font-size: medium; color: red; ">Write all value</span>
+{% endif %}
 <a href="/">Go back</a>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
