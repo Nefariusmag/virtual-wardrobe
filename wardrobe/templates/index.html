@@ -37,26 +37,26 @@
 </head>
 
 <body>
-<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black; text-decoration: underline;">Logout</p></a>
+<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black; text-decoration: underline;">{{ _('Logout') }}</p></a>
 <div class="row">
     {% if weather and user_ip and user_city %}
     <div class="column_left">
-        <h1>Info about <span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span></h1>
-        Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city:
-        <a href="/location"><p style="color: black"><u>{{user_city}}</u></p></a>
-
+        <h1>{{ _('Info about ') }}<span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span></h1>
+        {{ _('Weather: ') }} {{weather}}<br/>
+        {{ _('Your IP: ') }} {{user_ip}}<br/>
+        {{ _('You city: ') }} <a href="/location"><p style="color: black"><u>{{user_city}}</u></p></a>
     </div>
     <div class="column_central">
-        <h1>Our <span style="background-color: black; color: white; white-space: pre"> advice </span></h1>
+        <h1>{{ _('Our ') }}<span style="background-color: black; color: white; white-space: pre">{{ _(' advice ') }}</span></h1>
         {% if list_clothes %}
             <!--TODO add get clothes from data-->
         {% else %}
-            You haven't clothes in the wardrobe.
+            {{ _('You haven\'t clothes in the wardrobe.') }}
         {% endif %}
         <a href="/add_clothes"><p style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">Add new clothes <p/></a>
     </div>
     {% else %}
-    Now, it can't work
+    {{ _('Now, it can\'t work') }}
     {% endif %}
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

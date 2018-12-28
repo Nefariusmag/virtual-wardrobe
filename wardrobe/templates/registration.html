@@ -25,13 +25,13 @@
 </head>
 
 <body>
-<h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;"> Registration </span></h1>
+<h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Registration ') }}</span></h1>
 
-Write your name and password or <a href="/"><p style="color: black; text-decoration: underline;">go back<p/></a>
+{{ _('Write your name and password or ') }}<a href="/"><p style="color: black; text-decoration: underline;">{{ _('go back') }}<p/></a>
 <form action="" method="post">
-    <p><input type=text name=username placeholder="Enter username">
-    <p><input type=password name=password placeholder="Enter password">
-    <p><input type=submit value=Add>
+    <p><input type=text name=username placeholder="{{ _('Enter username') }}">
+    <p><input type=password name=password placeholder="{{ _('Enter password') }}">
+    <p><input type=submit value="{{ _('Add user') }}">
 </form>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

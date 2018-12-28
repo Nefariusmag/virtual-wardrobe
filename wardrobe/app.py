@@ -1,5 +1,6 @@
 from flask import Flask, request, abort, redirect, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
+from flask_babel import Babel, _
 
 from users.models import User, UsersRepository
 from weather import Weather
@@ -9,11 +10,18 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret_key'
 
+    babel = Babel(app)
+
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
 
     users_repository = UsersRepository()
+
+    @babel.localeselector
+    def get_locale():
+        from config import LANGUAGES
+        return request.accept_languages.best_match(LANGUAGES)
 
     @app.route('/')
     @login_required
@@ -31,10 +39,7 @@ def create_app():
                 username = request.form['username']
                 password = request.form['password']
                 registered_user = users_repository.get_user(username)
-                print('Users ' + str(users_repository.users))
-                print('Register user %s , password %s' % (registered_user.username, registered_user.password))
                 if registered_user != None and registered_user.password == password:
-                    print('Logged in..')
                     login_user(registered_user)
                     return redirect('/')
                 else:
