@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <title>Registration</title>
+    <title>{{ _('Add new clothes') }}</title>
     <style>
         body {
             margin-left: 200px;
@@ -25,47 +25,47 @@
 </head>
 
 <body>
-<h1>Add <span style="background-color: black; color: white; white-space: pre; line-height: 2;"> new </span> clothes in your wardrobe</h1>
+<h1>{{ _('Add ') }}<span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' new ') }}</span>{{ _(' clothes in your wardrobe') }}</h1>
 
-Write information about your clothes:
+{{ _('Write information about your clothes:') }}
 <form action="" method="post">
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Type</th>
-      <th scope="col">Temperature Min</th>
-      <th scope="col">Temperature Max</th>
+      <th scope="col">{{ _('Name') }}</th>
+      <th scope="col">{{ _('Type') }}</th>
+      <th scope="col">{{ _('Temperature Min') }}</th>
+      <th scope="col">{{ _('Temperature Max') }}</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="row"><input type=text name=clothes_name placeholder="Enter clothes name"></th>
+      <th scope="row"><input type=text name=clothes_name placeholder="{{ _('Enter clothes name') }}"></th>
       <td>
           <select name=type>
-              <option value="headdress">Headdress</option>
-              <option value="outerwear">Outerwear</option>
-              <option value="underwear">Underwear</option>
-              <option value="footwear">Footwear</option>
-              <option value="scarf">Scarf</option>
-              <option value="socks">Socks</option>
-              <option value="gloves">Gloves</option>
-              <option value="pants">Pants</option>
-              <option value="shirt_sweaters">Shirt&Sweaters</option>
+              <option value="headdress">{{ _('Headdress') }}</option>
+              <option value="outerwear">{{ _('Outerwear') }}</option>
+              <option value="underwear">{{ _('Underwear') }}</option>
+              <option value="footwear">{{ _('Footwear') }}</option>
+              <option value="scarf">{{ _('Scarf') }}</option>
+              <option value="socks">{{ _('Socks') }}</option>
+              <option value="gloves">{{ _('Gloves') }}</option>
+              <option value="pants">{{ _('Pants') }}</option>
+              <option value="shirt_sweaters">{{ _('Shirt&Sweaters') }}</option>
           </select>
       </td>
-      <td><input type=number name=temp_min placeholder="Enter temperature min"></td>
-      <td><input type=number name=temp_max placeholder="Enter temperature max"></td>
+      <td><input type=number name=temp_min placeholder="{{ _('Enter temperature min') }}"></td>
+      <td><input type=number name=temp_max placeholder="{{ _('Enter temperature max') }}"></td>
     </tr>
   </tbody>
 </table>
     {% if add_clothes_fail %}
-    <span style="font-size: medium; color: red; ">Write all value</span><br/>
+    <span style="font-size: medium; color: red; ">{{ _('Write all value') }}</span><br/>
     {% endif %}
-    <input type=submit value="Add clothes">
+    <input type=submit value="{{ _('Add clothes') }}">
 </form>
 <br/>
-<a href="/"><p style="margin-right: 250px; text-align: right; color: black; text-decoration: underline;">Go back<p/></a>
+<a href="/"><p style="margin-right: 250px; text-align: right; color: black; text-decoration: underline;">{{ _('Go back') }}<p/></a>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
