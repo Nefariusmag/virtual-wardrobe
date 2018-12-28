@@ -1,3 +1,4 @@
+import pytest
 from flask import Flask, request, abort, redirect, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask_babel import Babel, _
