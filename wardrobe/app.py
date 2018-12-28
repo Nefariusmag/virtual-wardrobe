@@ -79,10 +79,30 @@ def create_app():
     def load_user(userid):
         return users_repository.get_user_by_id(userid)
 
-    # somewhere to logout 
+    # somewhere to logout
     @app.route("/logout")
     @login_required
     def logout():
         logout_user()
         return redirect('/')
+
+    @app.route('/add_clothes', methods=['GET', 'POST'])
+    def add_clothes():
+        if request.method == 'POST':
+            print(current_user.username)
+            user = users_repository.get_id_by_user(current_user.username)
+            user_id = user.uid
+            clothes_name = request.form['clothes_name']
+            type = request.form['type']
+            temp_min = request.form['temp_min']
+            temp_max = request.form['temp_max']
+            if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
+                return render_template('add_clothes.html', add_clothes_fail=True)
+            else:
+                print(f'{user_id}, {clothes_name}, {type}, {temp_min}, {temp_max}')
+                # new_clothes = Clothes(username_id, clothes_name, type, top, bottom, upper, lower, temp_min, temp_max)
+                return redirect('/add_clothes')
+        else:
+            return render_template('add_clothes.html')
+
     return app

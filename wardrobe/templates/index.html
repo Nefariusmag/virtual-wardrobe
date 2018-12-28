@@ -37,7 +37,7 @@
 </head>
 
 <body>
-<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black;">Logout</p></a>
+<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black; text-decoration: underline;">Logout</p></a>
 <div class="row">
     {% if weather and user_ip and user_city %}
     <div class="column_left">
@@ -48,9 +48,12 @@
     </div>
     <div class="column_central">
         <h1>Our <span style="background-color: black; color: white; white-space: pre"> advice </span></h1>
-        -<br/>
-        -<br/>
-        -
+        {% if list_clothes %}
+            <!--TODO add get clothes from data-->
+        {% else %}
+            You haven't clothes in the wardrobe.
+        {% endif %}
+        <a href="/add_clothes"><p style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">Add new clothes <p/></a>
     </div>
     {% else %}
     Now, it can't work
