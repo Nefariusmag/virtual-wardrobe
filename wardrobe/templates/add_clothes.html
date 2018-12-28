@@ -25,9 +25,7 @@
 </head>
 
 <body>
-<h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;"> Add </span> clothes </h1>
-...in your wardrobe<br/>
-<br/>
+<h1>Add <span style="background-color: black; color: white; white-space: pre; line-height: 2;"> new </span> clothes in your wardrobe</h1>
 
 Write information about your clothes:
 <form action="" method="post">
@@ -36,10 +34,6 @@ Write information about your clothes:
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Type</th>
-      <th scope="col">Top</th>
-      <th scope="col">Bottom</th>
-      <th scope="col">Upper</th>
-      <th scope="col">Lower</th>
       <th scope="col">Temperature Min</th>
       <th scope="col">Temperature Max</th>
     </tr>
@@ -47,24 +41,31 @@ Write information about your clothes:
   <tbody>
     <tr>
       <th scope="row"><input type=text name=clothes_name placeholder="Enter clothes name"></th>
-        <!--todo list of types-->
-      <td><input type=text name=type placeholder="Enter type"></td>
-      <td><input type=checkbox name=top></td>
-      <td><input type=checkbox name=bottom></td>
-      <td><input type=checkbox name=upper></td>
-      <td><input type=checkbox name=lower></td>
+      <td>
+          <select name=type>
+              <option value="headdress">Headdress</option>
+              <option value="outerwear">Outerwear</option>
+              <option value="underwear">Underwear</option>
+              <option value="footwear">Footwear</option>
+              <option value="scarf">Scarf</option>
+              <option value="socks">Socks</option>
+              <option value="gloves">Gloves</option>
+              <option value="pants">Pants</option>
+              <option value="shirt_sweaters">Shirt&Sweaters</option>
+          </select>
+      </td>
       <td><input type=number name=temp_min placeholder="Enter temperature min"></td>
       <td><input type=number name=temp_max placeholder="Enter temperature max"></td>
     </tr>
   </tbody>
 </table>
+    {% if add_clothes_fail %}
+    <span style="font-size: medium; color: red; ">Write all value</span><br/>
+    {% endif %}
     <input type=submit value="Add clothes">
 </form>
 <br/>
-{% if add_clothes_fail %}
-<span style="font-size: medium; color: red; ">Write all value</span><br/>
-{% endif %}
-<a href="/">Go back</a>
+<a href="/"><p style="margin-right: 250px; text-align: right; color: black; text-decoration: underline;">Go back<p/></a>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

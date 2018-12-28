@@ -38,12 +38,10 @@
 
 <body>
 {% if user_login %}
-<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black;">Logout</p></a>
+<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black; text-decoration: underline;">Logout</p></a>
 <div class="row">
     <div class="column_left">
-        <h1>Info about <span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span>
-        </h1>
-        </h3>
+        <h1>Info about <span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span></h1>
         {% if weather and user_ip and user_city %}
         Weather: {{weather}}<br/>Your IP: {{user_ip}}<br/>You city: {{user_city}}
         {% else %}
@@ -52,7 +50,12 @@
     </div>
     <div class="column_central">
         <h1>Our <span style="background-color: black; color: white; white-space: pre"> advice </span></h1>
-        <a href="/add_clothes">Add clothes</a>
+        {% if list_clothes %}
+            <!--TODO add get clothes from data-->
+        {% else %}
+            You haven't clothes in the wardrobe.
+        {% endif %}
+        <a href="/add_clothes"><p style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">Add new clothes <p/></a>
     </div>
 </div>
 
