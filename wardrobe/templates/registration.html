@@ -29,7 +29,10 @@
 
 {{ _('Write your name and password or ') }}<a href="/"><p style="color: black; text-decoration: underline;">{{ _('go back') }}<p/></a>
 <form action="" method="post">
-    <p><input type=text name=username placeholder="{{ _('Enter username') }}">
+    <p><input type=text name=username placeholder="{{ _('Enter username') }}"><br/>
+    {% if user_exit %}
+    <span style="font-size: medium; color: red; ">{{ _('User exist') }}</span>
+    {% endif %}
     <p><input type=password name=password placeholder="{{ _('Enter password') }}">
     <p><input type=submit value="{{ _('Add user') }}">
 </form>

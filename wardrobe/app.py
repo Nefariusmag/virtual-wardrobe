@@ -39,7 +39,7 @@ def create_app():
                 username = request.form['username']
                 password = request.form['password']
                 registered_user = users_repository.get_user(username)
-                if registered_user != None and registered_user.password == password:
+                if registered_user is not None and registered_user.password == password:
                     login_user(registered_user)
                     return redirect('/')
                 else:
@@ -53,13 +53,16 @@ def create_app():
     def register():
         if current_user.is_authenticated:
             return redirect('/')
-        # todo add exception if you try to registration user that already exist
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
-            new_user = User(username, password, users_repository.next_index())
-            users_repository.save_user(new_user)
-            return redirect('/')
+            registered_user = users_repository.get_user(username)
+            if registered_user is None:
+                new_user = User(username, password, users_repository.next_index())
+                users_repository.save_user(new_user)
+                return redirect('/')
+            else:
+                return render_template('registration.html', user_exit=True)
         else:
             return render_template('registration.html')
 
