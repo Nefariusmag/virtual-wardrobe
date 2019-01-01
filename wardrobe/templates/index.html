@@ -48,8 +48,13 @@
     </div>
     <div class="column_central">
         <h1>{{ _('Our ') }}<span style="background-color: black; color: white; white-space: pre">{{ _(' advice ') }}</span></h1>
-        {% if list_clothes %}
-            <!--TODO add get clothes from data-->
+        {% if list_clothes != [] %}
+            {% for clothes in list_clothes %}
+                <!--TODO add info about zero clothes in wardrobe for user-->
+                {% if user_id == clothes.user_id %}
+                    {{ clothes.clothes_name }} - {{ clothes.type }}<br/>
+                {% endif %}
+            {% endfor %}
         {% else %}
             {{ _('You haven\'t clothes in the wardrobe.') }}
         {% endif %}

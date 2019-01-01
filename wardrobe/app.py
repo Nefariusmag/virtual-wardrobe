@@ -1,7 +1,8 @@
 from flask import Flask, request, abort, redirect, render_template
+from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-from flask_babel import Babel, _
 
+from clothes import Clothes
 from users.models import User, UsersRepository
 from weather import Weather
 
@@ -17,6 +18,7 @@ def create_app():
     login_manager.init_app(app)
 
     users_repository = UsersRepository()
+    list_clothes = []
 
     @babel.localeselector
     def get_locale():
@@ -28,7 +30,8 @@ def create_app():
     def index():
         weather = Weather(current_user.city, current_user.lang)
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
-                               user_ip=str(current_user.ip), user_city=current_user.city)
+                               user_ip=str(current_user.ip), user_city=current_user.city, list_clothes=list_clothes,
+                               user_id=current_user.uid)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -107,8 +110,8 @@ def create_app():
             if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
                 return render_template('add_clothes.html', add_clothes_fail=True)
             else:
-                print(f'{user_id}, {clothes_name}, {type}, {temp_min}, {temp_max}')
-                # new_clothes = Clothes(username_id, clothes_name, type, top, bottom, upper, lower, temp_min, temp_max)
+                new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max)
+                list_clothes.append(new_clothes)
                 return redirect('/add_clothes')
         else:
             return render_template('add_clothes.html')
