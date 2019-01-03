@@ -1,6 +1,8 @@
 from flask import Flask, request, abort, redirect, render_template
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_babel import Babel
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
+from clothes import Clothes
 from users.models import User, UsersRepository
 from weather import Weather
 
@@ -9,57 +11,79 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret_key'
 
+    babel = Babel(app)
+
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
 
     users_repository = UsersRepository()
+    list_clothes = []
+
+    @babel.localeselector
+    def get_locale():
+        from config import LANGUAGES
+        return request.accept_languages.best_match(LANGUAGES)
 
     @app.route('/')
     @login_required
     def index():
-        weather = Weather(registeredUser.city, registeredUser.lang)
-        return render_template('index.html', user_login=registeredUser.username, weather=str(weather),
-                               user_ip=str(registeredUser.ip), user_city=registeredUser.city)
+        weather = Weather(current_user.city, current_user.lang)
+        return render_template('index.html', user_login=current_user.username, weather=str(weather),
+                               user_ip=str(current_user.ip), user_city=current_user.city, list_clothes=list_clothes,
+                               user_id=current_user.uid)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
+        if current_user.is_authenticated:
+            return redirect('/')
         if request.method == 'POST':
             try:
                 username = request.form['username']
                 password = request.form['password']
-                # todo i'm not sure about this way
-                global registeredUser
-                registeredUser = users_repository.get_user(username)
-                print('Users ' + str(users_repository.users))
-                print('Register user %s , password %s' % (registeredUser.username, registeredUser.password))
-                if registeredUser != None and registeredUser.password == password:
-                    print('Logged in..')
-                    login_user(registeredUser)
+                registered_user = users_repository.get_user(username)
+                if registered_user is not None and registered_user.password == password:
+                    login_user(registered_user)
                     return redirect('/')
                 else:
                     return abort(401)
             except(AttributeError):
                 return abort(401)
         else:
-            return render_template('index.html')
+            return render_template('login.html')
 
     @app.route('/registration', methods=['GET', 'POST'])
     def register():
-        # todo add exception if you try to registration user that already exist
+        if current_user.is_authenticated:
+            return redirect('/')
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
-            new_user = User(username, password, users_repository.next_index())
-            users_repository.save_user(new_user)
-            return redirect('/')
+            registered_user = users_repository.get_user(username)
+            if registered_user is None:
+                new_user = User(username, password, users_repository.next_index())
+                users_repository.save_user(new_user)
+                return redirect('/')
+            else:
+                return render_template('registration.html', user_exit=True)
         else:
             return render_template('registration.html')
+
+    @app.route('/location', methods=['GET', 'POST'])
+    def change_location():
+        if request.method == 'POST':
+            city = request.form['city']
+            country = request.form['country']
+            location = f'{city},{country}'
+            current_user.city = location
+            return redirect('/')
+        else:
+            return render_template('location.html')
 
     # handle login failed
     @app.errorhandler(401)
     def page_not_found(e):
-        return render_template('index.html', login_fail=True)
+        return render_template('login.html', login_fail=True)
 
     # callback to reload the user object
     @login_manager.user_loader
@@ -72,4 +96,24 @@ def create_app():
     def logout():
         logout_user()
         return redirect('/')
+
+    @app.route('/add_clothes', methods=['GET', 'POST'])
+    def add_clothes():
+        if request.method == 'POST':
+            print(current_user.username)
+            user = users_repository.get_id_by_user(current_user.username)
+            user_id = user.uid
+            clothes_name = request.form['clothes_name']
+            type = request.form['type']
+            temp_min = request.form['temp_min']
+            temp_max = request.form['temp_max']
+            if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
+                return render_template('add_clothes.html', add_clothes_fail=True)
+            else:
+                new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max)
+                list_clothes.append(new_clothes)
+                return redirect('/add_clothes')
+        else:
+            return render_template('add_clothes.html')
+
     return app
