@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <title>{{ _('Virtual wardrobe') }}</title>
+    <title>{{ _(' Login ')}}</title>
     <style>
         body {
             margin-left: 200px;
@@ -37,32 +37,24 @@
 </head>
 
 <body>
-<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black; text-decoration: underline;">{{ _('Logout') }}</p></a>
 <div class="row">
-    {% if weather and user_ip and user_city %}
     <div class="column_left">
-        <h1>{{ _('Info about ') }}<span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span></h1>
-        {{ _('Weather: ') }} {{weather}}<br/>
-        {{ _('Your IP: ') }} {{user_ip}}<br/>
-        {{ _('You city: ') }} <a href="/location"><p style="color: black"><u>{{user_city}}</u></p></a>
+        <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Login ')}}</span></h1>
+        <form action="" method="post">
+            <p><input type=text name=username>
+            <p><input type=password name=password>
+            <p><input type=submit value="{{ _('Login') }}">
+            <p><input type="reset"></p>
+        </form>
+        {% if login_fail %}
+        <span style="font-size: medium; color: red; ">{{ _('Login failed') }}</span>
+        {% endif %}
     </div>
     <div class="column_central">
-        <h1>{{ _('Our ') }}<span style="background-color: black; color: white; white-space: pre">{{ _(' advice ') }}</span></h1>
-        {% if list_clothes != [] %}
-            {% for clothes in list_clothes %}
-                <!--TODO add info about zero clothes in wardrobe for user-->
-                {% if user_id == clothes.user_id %}
-                    {{ clothes.clothes_name }} - {{ clothes.type }}<br/>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            {{ _('You haven\'t clothes in the wardrobe.') }}
-        {% endif %}
-        <a href="/add_clothes"><p style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">{{ _('Add new clothes') }}<p/></a>
+        <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Registration ') }}</span>
+        </h1>
+        <a href="/registration"><p style="text-align: left; font: 18px Inconsolata; color: black">{{ _(' Registration ') }}</p></a>
     </div>
-    {% else %}
-    {{ _('Now, it can\'t work') }}
-    {% endif %}
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
