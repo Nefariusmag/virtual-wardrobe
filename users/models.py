@@ -14,11 +14,12 @@ class User(UserMixin, db.Model):
     geo = db.Column(db.String(128))
     lang = db.Column(db.String(5))
     ip = db.Column(db.String(15))
+    clothes = db.relationship('Clothes')
 
     def __init__(self, username):
         self.username = username
         self.password = ''
-        self.email = ''
+        self.email = f'{username}@mail.debug'
         self.lang = request.accept_languages[0][0]
         self.ip = self.get_user_ip()
         self.full_geo = self.get_user_geo()
@@ -62,26 +63,3 @@ class User(UserMixin, db.Model):
             user_geo = user_geo.json()
 
         return user_geo
-
-class UsersRepository:
-    def __init__(self):
-        self.users = dict()
-        self.users_id_dict = dict()
-        self.identifier = 0
-
-    def save_user(self, user):
-        self.users_id_dict.setdefault(user.get_id, user)
-        self.users.setdefault(user.username, user)
-
-    def get_user(self, username):
-        return self.users.get(username)
-
-    def get_id_by_user(self, username):
-        return self.users.get(username)
-
-    def get_user_by_id(self, userid):
-        return self.users_id_dict.get(userid)
-
-    def next_index(self):
-        self.identifier += 1
-        return self.identifier

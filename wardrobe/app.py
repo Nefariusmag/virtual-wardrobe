@@ -5,7 +5,8 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from clothes import Clothes
 from wardrobe import db, migrate
-from users.models import User, UsersRepository
+from users.models import User
+from clothes.models import Clothes
 from weather import Weather
 
 
@@ -24,8 +25,6 @@ def create_app():
     login_manager.login_view = "login"
     login_manager.init_app(app)
 
-    list_clothes = []
-
     @babel.localeselector
     def get_locale():
         from config import LANGUAGES
@@ -34,6 +33,7 @@ def create_app():
     @app.route('/')
     @login_required
     def index():
+        list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).all()
         weather = Weather(current_user.geo, current_user.lang)
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
                                user_ip=str(current_user.ip), user_city=current_user.geo, list_clothes=list_clothes,
@@ -118,7 +118,8 @@ def create_app():
                 return render_template('add_clothes.html', add_clothes_fail=True)
             else:
                 new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max)
-                list_clothes.append(new_clothes)
+                db.session.add(new_clothes)
+                db.session.commit()
                 return redirect('/add_clothes')
         else:
             return render_template('add_clothes.html')
