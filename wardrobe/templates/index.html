@@ -51,9 +51,7 @@
         {% if list_clothes != [] %}
             {% for clothes in list_clothes %}
                 <!--TODO add info about zero clothes in wardrobe for user-->
-                {% if user_id == clothes.user_id %}
-                    {{ clothes.clothes_name }} - {{ clothes.type }}<br/>
-                {% endif %}
+                {{ clothes.name }} - {{ clothes.clth_type }}<br/>
             {% endfor %}
         {% else %}
             {{ _('You haven\'t clothes in the wardrobe.') }}
