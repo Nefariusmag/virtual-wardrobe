@@ -1,20 +1,31 @@
 import requests
 from flask import request
 from flask_login import UserMixin
+from wardrobe import db
 
 
-class User(UserMixin):
-    def __init__(self, username, password, uid):
-        self.uid = uid
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(128))
+    email = db.Column(db.String(120), index=True, unique=True)
+    # todo add true format for geo column
+    geo = db.Column(db.String(128))
+    lang = db.Column(db.String(5))
+    ip = db.Column(db.String(15))
+
+    def __init__(self, username):
         self.username = username
-        self.password = password
+        self.password = ''
+        self.email = ''
         self.lang = request.accept_languages[0][0]
         self.ip = self.get_user_ip()
-        self.geo = self.get_user_geo()
-        self.city = '{},{}'.format(self.geo['city'], self.geo['country_code2'])
+        self.full_geo = self.get_user_geo()
+        self.geo = '{},{}'.format(self.full_geo['city'], self.full_geo['country_code2'])
 
-    def get_id(self):
-        return self.uid
+    def set_user_password(self, password):
+        self.password = password
 
     def get_user_ip(self):
         _ip = request.environ['REMOTE_ADDR']
@@ -52,7 +63,6 @@ class User(UserMixin):
 
         return user_geo
 
-
 class UsersRepository:
     def __init__(self):
         self.users = dict()
@@ -60,7 +70,7 @@ class UsersRepository:
         self.identifier = 0
 
     def save_user(self, user):
-        self.users_id_dict.setdefault(user.uid, user)
+        self.users_id_dict.setdefault(user.get_id, user)
         self.users.setdefault(user.username, user)
 
     def get_user(self, username):
