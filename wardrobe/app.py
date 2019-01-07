@@ -83,7 +83,8 @@ def create_app():
             city = request.form['city']
             country = request.form['country']
             location = f'{city},{country}'
-            current_user.city = location
+            db.session.query(User).filter(User.username == current_user.username).update({'geo': location})
+            db.session.commit()
             return redirect('/')
         else:
             return render_template('location.html')
@@ -108,7 +109,6 @@ def create_app():
     @app.route('/add_clothes', methods=['GET', 'POST'])
     def add_clothes():
         if request.method == 'POST':
-            print(current_user.username)
             user_id = current_user.id
             clothes_name = request.form['clothes_name']
             type = request.form['type']
