@@ -1,0 +1,38 @@
+body {
+    margin-left: 200px;
+    margin-top: 100px;
+    font: 18px Inconsolata;
+    line-height: 1.7;
+    background-color: #F4F5F4;
+    box-sizing: border-box;
+}
+
+h1 {
+    font: 250% Inconsolata;
+    font-weight: normal;
+}
+
+.column_left {
+    float: left;
+    width: 30%;
+    margin-right: 50px;
+    margin-top: 25px;
+}
+
+.column_central {
+    float: left;
+    margin-top: 25px;
+    margin-left: 150px;
+}
+
+a {
+    color: black;
+    text-decoration: underline;
+}
+
+.black_background {
+    background-color: black;
+    color: white;
+    white-space: pre;
+    line-height: 2;
+}
