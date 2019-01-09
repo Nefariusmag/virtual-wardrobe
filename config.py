@@ -14,12 +14,12 @@ class Default:
     TESTING = False
     DEBUG = False
     SECRET_KEY = 'SECRET__K'
-    SERVER_NAME = '127.0.0.1:5000'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    # SERVER_NAME = '127.0.0.1:5000'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///simple.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class Debug(Default):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///tmp.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
