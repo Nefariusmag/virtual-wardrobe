@@ -3,7 +3,6 @@ from flask import Flask, request, abort, redirect, render_template
 from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from clothes import Clothes
 from wardrobe import db, migrate
 from users.models import User
 from clothes.models import Clothes
@@ -33,11 +32,36 @@ def create_app():
     @app.route('/')
     @login_required
     def index():
-        list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).all()
         weather = Weather(current_user.geo, current_user.lang)
+
+        def get_list_clothes_of_one_type(list_all_clothes, clth_type):
+            list_clothes_of_one_type = []
+            for clothes in list_all_clothes:
+                if clothes.clth_type == clth_type:
+                    list_clothes_of_one_type.append(clothes)
+            return list_clothes_of_one_type
+
+        temperature = weather.weather[1]
+        list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).filter(
+            Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
+
+        list_headdress_clothes = get_list_clothes_of_one_type(list_clothes, 'headdress')
+        list_outerwear_clothes = get_list_clothes_of_one_type(list_clothes, 'outerwear')
+        list_underwear_clothes = get_list_clothes_of_one_type(list_clothes, 'underwear')
+        list_footwear_clothes = get_list_clothes_of_one_type(list_clothes, 'footwear')
+        list_scarf_clothes = get_list_clothes_of_one_type(list_clothes, 'scarf')
+        list_socks_clothes = get_list_clothes_of_one_type(list_clothes, 'socks')
+        list_gloves_clothes = get_list_clothes_of_one_type(list_clothes, 'gloves')
+        list_pants_clothes = get_list_clothes_of_one_type(list_clothes, 'pants')
+        list_shirt_sweaters_clothes = get_list_clothes_of_one_type(list_clothes, 'shirt_sweaters')
+
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
-                               user_ip=str(current_user.ip), user_city=current_user.geo, list_clothes=list_clothes,
-                               user_id=current_user.id)
+                               user_ip=str(current_user.ip), user_city=current_user.geo, user_id=current_user.id,
+                               list_clothes=list_clothes, list_headdress_clothes=list_headdress_clothes,
+                               list_outerwear_clothes=list_outerwear_clothes, list_underwear_clothes=list_underwear_clothes,
+                               list_footwear_clothes=list_footwear_clothes, list_scarf_clothes=list_scarf_clothes,
+                               list_socks_clothes=list_socks_clothes, list_gloves_clothes=list_gloves_clothes,
+                               list_pants_clothes=list_pants_clothes, list_shirt_sweaters_clothes=list_shirt_sweaters_clothes)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():

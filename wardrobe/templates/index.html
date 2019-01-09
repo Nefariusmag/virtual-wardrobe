@@ -49,10 +49,88 @@
     <div class="column_central">
         <h1>{{ _('Our ') }}<span style="background-color: black; color: white; white-space: pre">{{ _(' advice ') }}</span></h1>
         {% if list_clothes != [] %}
-            {% for clothes in list_clothes %}
-                <!--TODO add info about zero clothes in wardrobe for user-->
-                {{ clothes.name }} - {{ clothes.clth_type }}<br/>
-            {% endfor %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">{{ _('Type_Clothes') }}</th>
+              <th scope="col">{{ _('Name clothes') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{{ _('Headdress') }}</th>
+              <td>
+                {% for clothes in list_headdress_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Outerwear') }}</th>
+              <td>
+                {% for clothes in list_outerwear_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Underwear') }}</th>
+              <td>
+                {% for clothes in list_underwear_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Footwear') }}</th>
+              <td>
+                {% for clothes in list_footwear_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Scarf') }}</th>
+              <td>
+                {% for clothes in list_scarf_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Socks') }}</th>
+              <td>
+                {% for clothes in list_socks_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Gloves') }}</th>
+              <td>
+                {% for clothes in list_gloves_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Pants') }}</th>
+              <td>
+                {% for clothes in list_pants_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Shirt&Sweaters') }}</th>
+              <td>
+                {% for clothes in list_shirt_sweaters_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
         {% else %}
             {{ _('You haven\'t clothes in the wardrobe.') }}
         {% endif %}
