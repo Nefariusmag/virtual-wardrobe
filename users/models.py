@@ -29,7 +29,11 @@ class User(UserMixin, db.Model):
         self.password = password
 
     def get_user_ip(self):
-        _ip = request.environ['HTTP_X_FORWARDED_FOR']
+        addr_header = 'HTTP_X_FORWARDED_FOR'
+        if request.environ.get(addr_header,0) == 0:
+            addr_header = 'REMOTE_ADDR'
+
+        _ip = request.environ[addr_header]
         _ip_bit = _ip.split('.')
 
         if (_ip_bit[0] == '192') and (_ip_bit[1] == '168'):
