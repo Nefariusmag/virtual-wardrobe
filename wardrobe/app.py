@@ -5,18 +5,21 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from wardrobe import db, migrate
 from users.models import User
-from clothes.models import Clothes
+from clothes.models import Clothes, import_default_clothe_types
 from weather import Weather
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(config.Debug)
+    app.config.from_object(config.Default)
 
     db.init_app(app)
     migrate.init_app(app, db)
 
     db.create_all(app=app)
+
+    with app.app_context():
+        import_default_clothe_types(app.root_path)
 
     babel = Babel(app)
 
