@@ -41,7 +41,7 @@ def create_app():
                     list_clothes_of_one_type.append(clothes)
             return list_clothes_of_one_type
 
-        temperature = weather.weather[1]
+        temperature = weather.temp
         list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).filter(
             Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
 
