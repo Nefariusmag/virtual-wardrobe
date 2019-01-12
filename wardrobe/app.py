@@ -37,34 +37,15 @@ def create_app():
     def index():
         weather = Weather(current_user.geo, current_user.lang)
 
-        def get_list_clothes_of_one_type(list_all_clothes, clth_type):
-            list_clothes_of_one_type = []
-            for clothes in list_all_clothes:
-                if clothes.clth_type == clth_type:
-                    list_clothes_of_one_type.append(clothes)
-            return list_clothes_of_one_type
-
         temperature = weather.temp
         list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).filter(
             Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
 
-        list_headdress_clothes = get_list_clothes_of_one_type(list_clothes, 'headdress')
-        list_outerwear_clothes = get_list_clothes_of_one_type(list_clothes, 'outerwear')
-        list_underwear_clothes = get_list_clothes_of_one_type(list_clothes, 'underwear')
-        list_footwear_clothes = get_list_clothes_of_one_type(list_clothes, 'footwear')
-        list_scarf_clothes = get_list_clothes_of_one_type(list_clothes, 'scarf')
-        list_socks_clothes = get_list_clothes_of_one_type(list_clothes, 'socks')
-        list_gloves_clothes = get_list_clothes_of_one_type(list_clothes, 'gloves')
-        list_pants_clothes = get_list_clothes_of_one_type(list_clothes, 'pants')
-        list_shirt_sweaters_clothes = get_list_clothes_of_one_type(list_clothes, 'shirt_sweaters')
+        list_clth_types = Clothes.Types.query.filter(Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
 
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
                                user_ip=str(current_user.ip), user_city=current_user.geo, user_id=current_user.id,
-                               list_clothes=list_clothes, list_headdress_clothes=list_headdress_clothes,
-                               list_outerwear_clothes=list_outerwear_clothes, list_underwear_clothes=list_underwear_clothes,
-                               list_footwear_clothes=list_footwear_clothes, list_scarf_clothes=list_scarf_clothes,
-                               list_socks_clothes=list_socks_clothes, list_gloves_clothes=list_gloves_clothes,
-                               list_pants_clothes=list_pants_clothes, list_shirt_sweaters_clothes=list_shirt_sweaters_clothes)
+                               list_clothes=list_clothes, list_clth_types=list_clth_types)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -138,7 +119,7 @@ def create_app():
         if request.method == 'POST':
             user_id = current_user.id
             clothes_name = request.form['clothes_name']
-            type = request.form['type']
+            type = Clothes.Types.query.filter(Clothes.Types.desc == request.form['type']).first().id
             temp_min = request.form['temp_min']
             temp_max = request.form['temp_max']
             if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
