@@ -1,3 +1,13 @@
+# 1.0.2
+
+Create:
+1. Connect flask and db (sql alchemy)
+2. Change language if you change your locale
+3. Add new clothes
+4, Get your clothes for weather in your city
+5. Change your location
+6. Use one css for all pages
+
 # 1.0.1
 
 Create:

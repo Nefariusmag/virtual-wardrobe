@@ -1,8 +1,6 @@
 # virtual-wardrobe
 
-Create DataBase on Postgres (ver.9.6)
-
-Add ENV in database.py
+Add ENV in config.py
 
 pip install -r requirements.txt
 
@@ -14,3 +12,5 @@ If we need add new text for babel understand it:
  - in comand line `pybabel compile -d wardrobe/translations`
 
 If we want new leng `pybabel init -i messages.pot -d wardrobe/translations -l ru`
+
+Start app `__init__.py`

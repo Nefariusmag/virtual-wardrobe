@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-01-08 20:21+0300\n"
+"POT-Creation-Date: 2019-01-12 11:23+0300\n"
 "PO-Revision-Date: 2018-12-26 20:48+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -39,11 +39,11 @@ msgstr " шмотку в твой гардероб"
 msgid "Write information about your clothes:"
 msgstr "Напишите информацию о вашей шмотке:"
 
-#: wardrobe/templates/add_clothes.html:22
+#: wardrobe/templates/add_clothes.html:22 wardrobe/templates/index.html:32
 msgid "Name"
 msgstr "Название"
 
-#: wardrobe/templates/add_clothes.html:23
+#: wardrobe/templates/add_clothes.html:23 wardrobe/templates/index.html:31
 msgid "Type"
 msgstr "Тип"
 
@@ -59,39 +59,39 @@ msgstr "Максимальная температура"
 msgid "Enter clothes name"
 msgstr "Введите название шмотки"
 
-#: wardrobe/templates/add_clothes.html:33
+#: wardrobe/templates/add_clothes.html:33 wardrobe/templates/index.html:37
 msgid "Headdress"
 msgstr "Головной убор"
 
-#: wardrobe/templates/add_clothes.html:34
+#: wardrobe/templates/add_clothes.html:34 wardrobe/templates/index.html:45
 msgid "Outerwear"
 msgstr "Верхняя одежда"
 
-#: wardrobe/templates/add_clothes.html:35
+#: wardrobe/templates/add_clothes.html:35 wardrobe/templates/index.html:53
 msgid "Underwear"
 msgstr "Нижнее белье"
 
-#: wardrobe/templates/add_clothes.html:36
+#: wardrobe/templates/add_clothes.html:36 wardrobe/templates/index.html:61
 msgid "Footwear"
 msgstr "Обувь"
 
-#: wardrobe/templates/add_clothes.html:37
+#: wardrobe/templates/add_clothes.html:37 wardrobe/templates/index.html:69
 msgid "Scarf"
 msgstr "Шарф"
 
-#: wardrobe/templates/add_clothes.html:38
+#: wardrobe/templates/add_clothes.html:38 wardrobe/templates/index.html:77
 msgid "Socks"
 msgstr "Носки-Чулки"
 
-#: wardrobe/templates/add_clothes.html:39
+#: wardrobe/templates/add_clothes.html:39 wardrobe/templates/index.html:85
 msgid "Gloves"
 msgstr "Перчатки"
 
-#: wardrobe/templates/add_clothes.html:40
+#: wardrobe/templates/add_clothes.html:40 wardrobe/templates/index.html:93
 msgid "Pants"
 msgstr "Штаны"
 
-#: wardrobe/templates/add_clothes.html:41
+#: wardrobe/templates/add_clothes.html:41 wardrobe/templates/index.html:101
 msgid "Shirt&Sweaters"
 msgstr "Рубашки и свитера"
 
@@ -111,7 +111,7 @@ msgstr "Все поля должны быть заполнены"
 msgid "Add clothes"
 msgstr "Добавить шмотку"
 
-#: wardrobe/templates/add_clothes.html:56
+#: wardrobe/templates/add_clothes.html:55
 msgid "Go back"
 msgstr "Вернуться назад"
 
