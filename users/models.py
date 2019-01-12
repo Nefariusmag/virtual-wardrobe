@@ -1,23 +1,39 @@
 import requests
 from flask import request
 from flask_login import UserMixin
+from wardrobe import db
 
 
-class User(UserMixin):
-    def __init__(self, username, password, uid):
-        self.uid = uid
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    password = db.Column(db.String(128))
+    email = db.Column(db.String(120), index=True, unique=True)
+    # todo add true format for geo column
+    geo = db.Column(db.String(128))
+    lang = db.Column(db.String(5))
+    ip = db.Column(db.String(15))
+    clothes = db.relationship('Clothes')
+
+    def __init__(self, username):
         self.username = username
-        self.password = password
+        self.password = ''
+        self.email = f'{username}@mail.debug'
         self.lang = request.accept_languages[0][0]
         self.ip = self.get_user_ip()
-        self.geo = self.get_user_geo()
-        self.city = '{},{}'.format(self.geo['city'], self.geo['country_code2'])
+        self.full_geo = self.get_user_geo()
+        self.geo = '{},{}'.format(self.full_geo['city'], self.full_geo['country_code2'])
 
-    def get_id(self):
-        return self.uid
+    def set_user_password(self, password):
+        self.password = password
 
     def get_user_ip(self):
-        _ip = request.environ['REMOTE_ADDR']
+        addr_header = 'HTTP_X_FORWARDED_FOR'
+        if request.environ.get(addr_header,0) == 0:
+            addr_header = 'REMOTE_ADDR'
+
+        _ip = request.environ[addr_header]
         _ip_bit = _ip.split('.')
 
         if (_ip_bit[0] == '192') and (_ip_bit[1] == '168'):
@@ -51,27 +67,3 @@ class User(UserMixin):
             user_geo = user_geo.json()
 
         return user_geo
-
-
-class UsersRepository:
-    def __init__(self):
-        self.users = dict()
-        self.users_id_dict = dict()
-        self.identifier = 0
-
-    def save_user(self, user):
-        self.users_id_dict.setdefault(user.uid, user)
-        self.users.setdefault(user.username, user)
-
-    def get_user(self, username):
-        return self.users.get(username)
-
-    def get_id_by_user(self, username):
-        return self.users.get(username)
-
-    def get_user_by_id(self, userid):
-        return self.users_id_dict.get(userid)
-
-    def next_index(self):
-        self.identifier += 1
-        return self.identifier

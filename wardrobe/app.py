@@ -1,23 +1,28 @@
-import pytest
+import config
 from flask import Flask, request, abort, redirect, render_template
+from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
-from flask_babel import Babel, _
 
-from users.models import User, UsersRepository
+from wardrobe import db, migrate
+from users.models import User
+from clothes.models import Clothes
 from weather import Weather
 
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'secret_key'
+    app.config.from_object(config.Debug)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    db.create_all(app=app)
 
     babel = Babel(app)
 
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
-
-    users_repository = UsersRepository()
 
     @babel.localeselector
     def get_locale():
@@ -27,9 +32,36 @@ def create_app():
     @app.route('/')
     @login_required
     def index():
-        weather = Weather(current_user.city, current_user.lang)
+        weather = Weather(current_user.geo, current_user.lang)
+
+        def get_list_clothes_of_one_type(list_all_clothes, clth_type):
+            list_clothes_of_one_type = []
+            for clothes in list_all_clothes:
+                if clothes.clth_type == clth_type:
+                    list_clothes_of_one_type.append(clothes)
+            return list_clothes_of_one_type
+
+        temperature = weather.temp
+        list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).filter(
+            Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
+
+        list_headdress_clothes = get_list_clothes_of_one_type(list_clothes, 'headdress')
+        list_outerwear_clothes = get_list_clothes_of_one_type(list_clothes, 'outerwear')
+        list_underwear_clothes = get_list_clothes_of_one_type(list_clothes, 'underwear')
+        list_footwear_clothes = get_list_clothes_of_one_type(list_clothes, 'footwear')
+        list_scarf_clothes = get_list_clothes_of_one_type(list_clothes, 'scarf')
+        list_socks_clothes = get_list_clothes_of_one_type(list_clothes, 'socks')
+        list_gloves_clothes = get_list_clothes_of_one_type(list_clothes, 'gloves')
+        list_pants_clothes = get_list_clothes_of_one_type(list_clothes, 'pants')
+        list_shirt_sweaters_clothes = get_list_clothes_of_one_type(list_clothes, 'shirt_sweaters')
+
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
-                               user_ip=str(current_user.ip), user_city=current_user.city)
+                               user_ip=str(current_user.ip), user_city=current_user.geo, user_id=current_user.id,
+                               list_clothes=list_clothes, list_headdress_clothes=list_headdress_clothes,
+                               list_outerwear_clothes=list_outerwear_clothes, list_underwear_clothes=list_underwear_clothes,
+                               list_footwear_clothes=list_footwear_clothes, list_scarf_clothes=list_scarf_clothes,
+                               list_socks_clothes=list_socks_clothes, list_gloves_clothes=list_gloves_clothes,
+                               list_pants_clothes=list_pants_clothes, list_shirt_sweaters_clothes=list_shirt_sweaters_clothes)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -39,13 +71,13 @@ def create_app():
             try:
                 username = request.form['username']
                 password = request.form['password']
-                registered_user = users_repository.get_user(username)
-                if registered_user != None and registered_user.password == password:
+                registered_user = User.query.filter(User.username == username).first()
+                if registered_user is not None and registered_user.password == password:
                     login_user(registered_user)
                     return redirect('/')
                 else:
                     return abort(401)
-            except(AttributeError):
+            except AttributeError:
                 return abort(401)
         else:
             return render_template('login.html')
@@ -54,13 +86,18 @@ def create_app():
     def register():
         if current_user.is_authenticated:
             return redirect('/')
-        # todo add exception if you try to registration user that already exist
         if request.method == 'POST':
             username = request.form['username']
             password = request.form['password']
-            new_user = User(username, password, users_repository.next_index())
-            users_repository.save_user(new_user)
-            return redirect('/')
+            registered_user = User.query.filter(User.username == username).first()
+            if registered_user is None:
+                new_user = User(username)
+                new_user.set_user_password(password)
+                db.session.add(new_user)
+                db.session.commit()
+                return redirect('/')
+            else:
+                return render_template('registration.html', user_exit=True)
         else:
             return render_template('registration.html')
 
@@ -70,7 +107,8 @@ def create_app():
             city = request.form['city']
             country = request.form['country']
             location = f'{city},{country}'
-            current_user.city = location
+            db.session.query(User).filter(User.username == current_user.username).update({'geo': location})
+            db.session.commit()
             return redirect('/')
         else:
             return render_template('location.html')
@@ -83,7 +121,7 @@ def create_app():
     # callback to reload the user object
     @login_manager.user_loader
     def load_user(userid):
-        return users_repository.get_user_by_id(userid)
+        return User.query.get(int(userid))
 
     # somewhere to logout
     @app.route("/logout")
@@ -95,9 +133,7 @@ def create_app():
     @app.route('/add_clothes', methods=['GET', 'POST'])
     def add_clothes():
         if request.method == 'POST':
-            print(current_user.username)
-            user = users_repository.get_id_by_user(current_user.username)
-            user_id = user.uid
+            user_id = current_user.id
             clothes_name = request.form['clothes_name']
             type = request.form['type']
             temp_min = request.form['temp_min']
@@ -105,8 +141,9 @@ def create_app():
             if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
                 return render_template('add_clothes.html', add_clothes_fail=True)
             else:
-                print(f'{user_id}, {clothes_name}, {type}, {temp_min}, {temp_max}')
-                # new_clothes = Clothes(username_id, clothes_name, type, top, bottom, upper, lower, temp_min, temp_max)
+                new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max)
+                db.session.add(new_clothes)
+                db.session.commit()
                 return redirect('/add_clothes')
         else:
             return render_template('add_clothes.html')

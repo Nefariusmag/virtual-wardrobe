@@ -3,53 +3,110 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/default.css') }}">
+
+<!--
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+-->
     <title>{{ _('Virtual wardrobe') }}</title>
-    <style>
-        body {
-            margin-left: 200px;
-            margin-top: 100px;
-            font: 18px Inconsolata;
-            line-height: 1.7;
-            background-color: #F4F5F4;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            font: 250% Inconsolata;
-            font-weight: normal;
-        }
-
-        .column_left {
-            float: left;
-            width: 30%;
-            margin-right: 50px;
-            margin-top: 25px;
-        }
-
-        .column_central {
-            float: left;
-            margin-top: 25px;
-            margin-left: 150px;
-        }
-    </style>
 </head>
 
 <body>
-<a href="/logout"><p style="margin-right: -500px; text-align: center; color: black; text-decoration: underline;">{{ _('Logout') }}</p></a>
+<a href="/logout">{{ _('Logout') }}</a>
 <div class="row">
     {% if weather and user_ip and user_city %}
     <div class="column_left">
-        <h1>{{ _('Info about ') }}<span style="background-color: black; color: white; white-space: pre;"> {{user_login}} </span></h1>
+        <h1>{{ _('Info about ') }}<span class="black_background"> {{user_login}} </span></h1>
         {{ _('Weather: ') }} {{weather}}<br/>
         {{ _('Your IP: ') }} {{user_ip}}<br/>
-        {{ _('You city: ') }} <a href="/location"><p style="color: black"><u>{{user_city}}</u></p></a>
+        {{ _('You city: ') }} <a href="/location"><u>{{user_city}}</u></a>
     </div>
     <div class="column_central">
-        <h1>{{ _('Our ') }}<span style="background-color: black; color: white; white-space: pre">{{ _(' advice ') }}</span></h1>
-        {% if list_clothes %}
-            <!--TODO add get clothes from data-->
+        <h1>{{ _('Our ') }}<span class="black_background">{{ _(' advice ') }}</span></h1>
+        {% if list_clothes != [] %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">{{ _('Type') }}</th>
+              <th scope="col">{{ _('Name') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{{ _('Headdress') }}</th>
+              <td>
+                {% for clothes in list_headdress_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Outerwear') }}</th>
+              <td>
+                {% for clothes in list_outerwear_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Underwear') }}</th>
+              <td>
+                {% for clothes in list_underwear_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Footwear') }}</th>
+              <td>
+                {% for clothes in list_footwear_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Scarf') }}</th>
+              <td>
+                {% for clothes in list_scarf_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Socks') }}</th>
+              <td>
+                {% for clothes in list_socks_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Gloves') }}</th>
+              <td>
+                {% for clothes in list_gloves_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Pants') }}</th>
+              <td>
+                {% for clothes in list_pants_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{{ _('Shirt&Sweaters') }}</th>
+              <td>
+                {% for clothes in list_shirt_sweaters_clothes %}
+                    {{ clothes.name }}<br/>
+                {% endfor %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
         {% else %}
             {{ _('You haven\'t clothes in the wardrobe.') }}
         {% endif %}
@@ -59,6 +116,7 @@
     {{ _('Now, it can\'t work') }}
     {% endif %}
 </div>
+<!--
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -68,5 +126,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+-->
 </body>
 </html>
