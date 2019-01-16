@@ -147,6 +147,42 @@ msgstr "Наш "
 msgid " advice "
 msgstr " совет "
 
+#: wardrobe/templates/index.html:38
+msgid "headdress"
+msgstr "Головной убор"
+
+#: wardrobe/templates/index.html:38
+msgid "outerwear"
+msgstr "Верхняя одежда"
+
+#: wardrobe/templates/index.html:38
+msgid "underwear"
+msgstr "Нижнее белье"
+
+#: wardrobe/templates/index.html:38
+msgid "footwear"
+msgstr "Обувь"
+
+#: wardrobe/templates/index.html:38
+msgid "scarf"
+msgstr "Шарф"
+
+#: wardrobe/templates/index.html:38
+msgid "socks"
+msgstr "Носки-Чулки"
+
+#: wardrobe/templates/index.html:38
+msgid "gloves"
+msgstr "Перчатки"
+
+#: wardrobe/templates/index.html:38
+msgid "pants"
+msgstr "Штаны"
+
+#: wardrobe/templates/index.html:38
+msgid "shirt_sweaters"
+msgstr "Рубашки и свитера"
+
 #: wardrobe/templates/index.html:111
 msgid "You haven't clothes in the wardrobe."
 msgstr "У вас нету шмоток в гардеробе."

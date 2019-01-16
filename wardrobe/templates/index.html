@@ -16,104 +16,46 @@
 <a href="/logout">{{ _('Logout') }}</a>
 <div class="row">
     {% if weather and user_ip and user_city %}
-    <div class="column_left">
-        <h1>{{ _('Info about ') }}<span class="black_background"> {{user_login}} </span></h1>
-        {{ _('Weather: ') }} {{weather}}<br/>
-        {{ _('Your IP: ') }} {{user_ip}}<br/>
-        {{ _('You city: ') }} <a href="/location"><u>{{user_city}}</u></a>
-    </div>
-    <div class="column_central">
-        <h1>{{ _('Our ') }}<span class="black_background">{{ _(' advice ') }}</span></h1>
-        {% if list_clothes != [] %}
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">{{ _('Type') }}</th>
-              <th scope="col">{{ _('Name') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">{{ _('Headdress') }}</th>
-              <td>
-                {% for clothes in list_headdress_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Outerwear') }}</th>
-              <td>
-                {% for clothes in list_outerwear_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Underwear') }}</th>
-              <td>
-                {% for clothes in list_underwear_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Footwear') }}</th>
-              <td>
-                {% for clothes in list_footwear_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Scarf') }}</th>
-              <td>
-                {% for clothes in list_scarf_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Socks') }}</th>
-              <td>
-                {% for clothes in list_socks_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Gloves') }}</th>
-              <td>
-                {% for clothes in list_gloves_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Pants') }}</th>
-              <td>
-                {% for clothes in list_pants_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{{ _('Shirt&Sweaters') }}</th>
-              <td>
-                {% for clothes in list_shirt_sweaters_clothes %}
-                    {{ clothes.name }}<br/>
-                {% endfor %}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        {% else %}
-            {{ _('You haven\'t clothes in the wardrobe.') }}
-        {% endif %}
-        <a href="/add_clothes"><p style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">{{ _('Add new clothes') }}<p/></a>
-    </div>
+        <div class="column_left">
+            <h1>{{ _('Info about ') }}<span class="black_background"> {{ user_login }} </span></h1>
+            {{ _('Weather: ') }} {{ weather }}<br/>
+            {{ _('Your IP: ') }} {{ user_ip }}<br/>
+            {{ _('You city: ') }} <a href="/location"><u>{{ user_city }}</u></a>
+        </div>
+        <div class="column_central">
+            <h1>{{ _('Our ') }}<span class="black_background">{{ _(' advice ') }}</span></h1>
+            {% if list_clothes != [] and list_clth_types != [] %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ _('Type_Clothes') }}</th>
+                        <th scope="col">{{ _('Name clothes') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for clth_type in list_clth_types %}
+                        <tr>
+                            <th scope="row">{{ _(clth_type.desc) }}</th>
+                            <td>
+                                {% for clothes in list_clothes %}
+                                    {% if clothes.clth_type == clth_type.id %}
+                                        {{ clothes.name }}<br/>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {{ _('You haven\'t clothes in the wardrobe.') }}
+            {% endif %}
+            <a href="/add_clothes"><p
+                    style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">{{ _('Add new clothes') }}
+                <p/></a>
+        </div>
     {% else %}
-    {{ _('Now, it can\'t work') }}
+        {{ _('Now, it can\'t work') }}
     {% endif %}
 </div>
 <!--
