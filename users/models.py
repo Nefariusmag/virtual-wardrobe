@@ -67,3 +67,12 @@ class User(UserMixin, db.Model):
             user_geo = user_geo.json()
 
         return user_geo
+
+    class UserToken(db.Model):
+        __tablename__ = 'user_tokens'
+        id = db.Column(db.Integer, primary_key=True)
+        user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+        token = db.Column(db.String(128))
+        type = db.Column(db.Integer)
+        issue = db.Column(db.DateTime)
+        expire = db.Column(db.DateTime)
