@@ -21,5 +21,5 @@ class Default:
 
 class Debug(Default):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///tmp.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
