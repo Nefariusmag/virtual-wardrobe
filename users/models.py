@@ -20,20 +20,29 @@ class User(UserMixin, db.Model):
         self.username = username
         self.password = ''
         self.email = f'{username}@mail.debug'
-        self.lang = request.accept_languages[0][0]
+        self.lang = self.get_language()
         self.ip = self.get_user_ip()
         self.full_geo = self.get_user_geo()
         self.geo = '{},{}'.format(self.full_geo['city'], self.full_geo['country_code2'])
+
+    def get_language(self):
+        try:
+            return request.accept_languages[0][0]
+        except:
+            return 'ru'
 
     def set_user_password(self, password):
         self.password = password
 
     def get_user_ip(self):
         addr_header = 'HTTP_X_FORWARDED_FOR'
-        if request.environ.get(addr_header,0) == 0:
-            addr_header = 'REMOTE_ADDR'
+        try:
+            if request.environ.get(addr_header,0) == 0:
+                addr_header = 'REMOTE_ADDR'
+            _ip = request.environ[addr_header]
+        except:
+            _ip = '46.39.56.60'
 
-        _ip = request.environ[addr_header]
         _ip_bit = _ip.split('.')
 
         if (_ip_bit[0] == '192') and (_ip_bit[1] == '168'):
@@ -48,10 +57,11 @@ class User(UserMixin, db.Model):
         return _ip
 
     def get_srv_ip(self):
-        # todo add try to take error if api.ipify.org is not working
         _ip = requests.get('https://api.ipify.org')
         if _ip.status_code == 200:
             _ip = _ip.text
+        else:
+            _ip = '46.39.56.60'
 
         return _ip
 
@@ -61,9 +71,11 @@ class User(UserMixin, db.Model):
             'apiKey': GEOIP_APIKEY,
             'ip': self.ip
         }
-        user_geo = requests.get(GEOIP_URL, params)
 
+        user_geo = requests.get(GEOIP_URL, params)
         if user_geo.status_code == 200:
             user_geo = user_geo.json()
+        else:
+            user_geo = {'country_code2': 'RU', 'city': 'Moscow'}
 
         return user_geo
