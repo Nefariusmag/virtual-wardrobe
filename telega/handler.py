@@ -1,15 +1,18 @@
-from telegram.ext import Updater, CommandHandler, ConversationHandler, RegexHandler, MessageHandler, Filters
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
-from wardrobe import db
-from wardrobe.app import create_app
-from weather import Weather
-from users.models import User
-from clothes.models import Clothes
-import config
 import random
 import string
 
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
+from telegram.ext import ConversationHandler
 
+import config
+from clothes.models import Clothes
+from users.models import User
+from wardrobe import db
+from wardrobe.app import create_app
+from weather import Weather
+
+
+# TODO fix a lot of connections
 def connect_db():
     app = create_app()
     app.app_context().push()
@@ -94,11 +97,16 @@ def dontknow(bot, update, user_data):
     update.message.reply_text('Try again')
 
 
+def get_help(bot, update):
+    text = 'I can this:\n /start\n/location <city,country>\n/add or Добавить шмотки\n/get_clothes\n/help'
+    update.message.reply_text(text)
+
+
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def login(bot, update):
+def registration_user(bot, update):
     connect_db()
     username = update.message.from_user.username
     registered_user = User.query.filter(User.username == username).first()
@@ -115,7 +123,7 @@ def login(bot, update):
         update.message.reply_text(f'You user {username} already in system.')
 
 
-def get(bot, update):
+def get_clothes(bot, update):
     connect_db()
 
     username = update.message.from_user.username
@@ -127,19 +135,19 @@ def get(bot, update):
         Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
 
     # TODO add translate
+    text = f'In {user.geo} now {temperature} °C:\n\n'
     if list_clothes:
-        text = f'In {user.geo} now {temperature} °C\n\n'
         for one_clothes in list_clothes:
             clth_type = Clothes.Types.query.filter(Clothes.Types.id == one_clothes.clth_type).first()
             text += f'{clth_type.desc} - {one_clothes.name}\n'
     else:
         # TODO add translate
-        text = 'You haven\'t clothes in the wardrobe.'
+        text += 'You haven\'t clothes in the wardrobe.'
 
     update.message.reply_text(text)
 
 
-def location(bot, update):
+def change_location(bot, update):
     connect_db()
     username = update.message.from_user.username
     user = User.query.filter(User.username == username).first()

@@ -1,26 +1,37 @@
 import logging
-import os
 from telegram.ext import Updater, CommandHandler, ConversationHandler, RegexHandler, MessageHandler, Filters
-from telega.handler import id_generator, location, get, login, dontknow, add_clothes_start, add_clothes_get_name, \
-    add_clothes_get_type, add_clothes_get_temperature_max, add_clothes_get_temperature_min
+from telega.handler import id_generator, change_location, get_clothes, registration_user, dontknow, add_clothes_start, add_clothes_get_name, \
+    add_clothes_get_type, add_clothes_get_temperature_max, add_clothes_get_temperature_min, get_help
+from config import PROXY_URL, TELEGRAM_TOKEN, PROXY_PASSWORD, PROXY_LOGIN
 
-token = os.getenv('TOKEN', '')
+token = TELEGRAM_TOKEN
 
-PROXY = {'proxy_url': 'socks5://t1.learn.python.ru:1080',
-         'urllib3_proxy_kwargs': {'username': 'learn', 'password': 'python'}}
+PROXY = {'proxy_url': PROXY_URL,
+         'urllib3_proxy_kwargs': {'username': PROXY_LOGIN, 'password': PROXY_PASSWORD}}
 
 
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log')
 
+from wardrobe.app import create_app
+import config
+
+
+# def connect_db():
+#     app = create_app()
+#     app.app_context().push()
+#     app.config.from_object(config.Default)
+#     return app
+
 
 def main():
     mybot = Updater(token, request_kwargs=PROXY)
     dp = mybot.dispatcher
-    dp.add_handler(CommandHandler("start", login))
-    dp.add_handler(CommandHandler("get", get))
-    dp.add_handler(CommandHandler("location", location))
+
+    dp.add_handler(CommandHandler("start", registration_user))
+    dp.add_handler(CommandHandler("get", get_clothes, pass_user_data=True))
+    dp.add_handler(CommandHandler("location", change_location, pass_user_data=True))
     # TODO /help
     add_clothes = ConversationHandler (
         entry_points=[RegexHandler('^(Добавить шмотки)$', add_clothes_start, pass_user_data=True),
@@ -35,7 +46,7 @@ def main():
                                   pass_user_data=True)]
     )
     dp.add_handler(add_clothes)
-
+    dp.add_handler(CommandHandler('help', get_help))
     mybot.start_polling()
     mybot.idle()
 

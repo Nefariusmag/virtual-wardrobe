@@ -9,6 +9,9 @@ GEOIP_URL = 'https://api.ipgeolocation.io/ipgeo'
 GEOIP_APIKEY = os.getenv('GEOIP_APIKEY', '')
 LANGUAGES = ['en', 'ru']
 PROXY_URL = 'socks5://t1.learn.python.ru:1080'
+PROXY_LOGIN = 'learn'
+PROXY_PASSWORD = 'python'
+TELEGRAM_TOKEN = os.getenv('TOKEN', '')
 
 
 class Default:

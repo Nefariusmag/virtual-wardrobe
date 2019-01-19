@@ -1,3 +1,17 @@
+# 1.0.3
+
+Create:
+1. Telegram bot with command:
+```
+/help
+/start
+/location <city,country>
+/add
+/get_clothes
+```
+2. New Table for Clothes with Type of clothes
+3. Refactoring functions for working with new table
+
 # 1.0.2
 
 Create:
@@ -16,7 +30,7 @@ Create:
 - libs for authorization
 - vars user and pass in class User
 - class UsersRepository for save logn-pass
-- def for login, home, registration, logout, page_error
+- def for registration_user, home, registration, logout, page_error
 3. Fabric for project.
 
 # 1.0.0
