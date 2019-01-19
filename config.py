@@ -8,6 +8,7 @@ WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather'
 GEOIP_URL = 'https://api.ipgeolocation.io/ipgeo'
 GEOIP_APIKEY = os.getenv('GEOIP_APIKEY', '')
 LANGUAGES = ['en', 'ru']
+PROXY_URL = 'socks5://t1.learn.python.ru:1080'
 
 
 class Default:
