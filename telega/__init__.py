@@ -18,11 +18,11 @@ from wardrobe.app import create_app
 import config
 
 
-# def connect_db():
-#     app = create_app()
-#     app.app_context().push()
-#     app.config.from_object(config.Default)
-#     return app
+def connect_db():
+    app = create_app()
+    app.app_context().push()
+    app.config.from_object(config.Default)
+    return app
 
 
 def main():
@@ -30,8 +30,8 @@ def main():
     dp = mybot.dispatcher
 
     dp.add_handler(CommandHandler("start", registration_user))
-    dp.add_handler(CommandHandler("get", get_clothes, pass_user_data=True))
-    dp.add_handler(CommandHandler("location", change_location, pass_user_data=True))
+    dp.add_handler(CommandHandler("get", get_clothes))
+    dp.add_handler(CommandHandler("location", change_location))
     # TODO /help
     add_clothes = ConversationHandler (
         entry_points=[RegexHandler('^(Добавить шмотки)$', add_clothes_start, pass_user_data=True),
@@ -51,5 +51,6 @@ def main():
     mybot.idle()
 
 
+app = connect_db()
 if __name__ == '__main__':
     main()
