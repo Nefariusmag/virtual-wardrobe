@@ -1,53 +1,39 @@
 import json
 
+from rest.handlers import APIHandlers
+from rest.utils import token_auth_required
 from wardrobe import db
 from users.models import User
 from clothes.models import Clothes, import_default_clothe_types
 
 
-def response_wrapper(*args, **kwargs):
-    _resp = {}
-    code = 404
-    msg = {'Not found'}
-    if args != ():
-        code = args[0]
-        msg = {}
-        for block in args[1:]:
-            block_name = block[0]
-            # block_data = block[1]
-            for block_data in block[1]:
-                msg.update({block_name: block_data})
+def response_wrapper(*args):
+    _resp = {'code': 404, 'body': {}}
+    if args == ():
+        args = (404, ('msg', 'Not found'))
 
-    _resp.update({'code': code})
-    _resp.update({'body': msg})
+    _resp['code'] = args[0]
+    for block in args[1:]:
+        block_name = block[0]
+        block_data = block[1]
+        _resp['body'][block_name] = block_data
 
     return json.dumps(_resp)
 
 
 class WardrobeAPI(object):
 
-    def __init__(self, db, *args):
+    def __init__(self, db, *args, **kwargs):
         self.db = db
         self.params = dict(args[0])
+        self.params['version'] = kwargs['v']
+        self.params['command'] = kwargs['apicmd']
+        self.params['method'] = kwargs['method']
+        self.params['data'] = args[2] or {}
         self.headers = dict(args[1])
         self.response = self.response()
 
-    def check_token(self, _token):
-        user_id = db.session.query(User.UserToken.user_id). \
-            filter(User.UserToken.token == _token). \
-            first()
-        if (user_id != []) and user_id:
-            user = db.session.query(User.id, User.username).filter(
-                User.id.in_(
-                    user_id
-                )
-            ).all()
-        return user
-
     def response(self):
-        resp = [200, ('msg', 'Hello world!')]
-        token = self.params.get('TOKEN', 0)
-        if token:
-            user = self.check_token(token)
-            resp.append(('user', (('id', user.id), ('name', user.username))))
+        handler = APIHandlers(self.params, self.headers)
+        resp = handler()
         return response_wrapper(*resp)

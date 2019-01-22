@@ -4,6 +4,7 @@ from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from wardrobe import db, migrate
+from rest import WardrobeAPI as WAPI
 from users.models import User
 from clothes.models import Clothes, import_default_clothe_types
 from weather import Weather
@@ -31,6 +32,12 @@ def create_app():
     def get_locale():
         from config import LANGUAGES
         return request.accept_languages.best_match(LANGUAGES)
+
+    @app.route('/api/<version>/<apicmd>', methods=['GET', 'POST'])
+    def api(version='', apicmd=''):
+        args = (request.args, request.headers, request.get_json(force=True, silent=True))
+        kw_api_args = {'v': version, 'apicmd': apicmd, 'method': request.method}
+        return WAPI(db, *args, **kw_api_args).response
 
     @app.route('/')
     @login_required
