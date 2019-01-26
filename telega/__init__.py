@@ -1,7 +1,8 @@
 import logging
 from telegram.ext import Updater, CommandHandler, ConversationHandler, RegexHandler, MessageHandler, Filters
-from telega.handler import id_generator, change_location, get_clothes, registration_user, dontknow, add_clothes_start, add_clothes_get_name, \
-    add_clothes_get_type, add_clothes_get_temperature_max, add_clothes_get_temperature_min, get_help
+from telega.handler import id_generator, change_location_start, change_location_get_location, get_clothes, registration_user, \
+    dontknow, add_clothes_start, add_clothes_get_name, add_clothes_get_type, add_clothes_get_temperature_max, \
+    add_clothes_get_temperature_min, get_help, add_clothes_get_photo
 from config import PROXY_URL, TELEGRAM_TOKEN, PROXY_PASSWORD, PROXY_LOGIN
 
 token = TELEGRAM_TOKEN
@@ -31,21 +32,31 @@ def main():
 
     dp.add_handler(CommandHandler("start", registration_user))
     dp.add_handler(CommandHandler("get", get_clothes))
-    dp.add_handler(CommandHandler("location", change_location))
+    # dp.add_handler(CommandHandler("location", change_location))
     # TODO /help
-    add_clothes = ConversationHandler (
+    add_clothes = ConversationHandler(
         entry_points=[RegexHandler('^(Добавить шмотки)$', add_clothes_start, pass_user_data=True),
                       CommandHandler('add', add_clothes_start, pass_user_data=True)],
         states={
-            "name": [MessageHandler(Filters.text, add_clothes_get_name, pass_user_data=True)],
+            "clth_name": [MessageHandler(Filters.text, add_clothes_get_name, pass_user_data=True)],
             "clth_type": [RegexHandler('^(headdress|outerwear|underwear|footwear|scarf|socks|gloves|pants|shirt_sweaters)$', add_clothes_get_type, pass_user_data=True)],
             "temperature_min": [MessageHandler(Filters.text, add_clothes_get_temperature_min, pass_user_data=True)],
-            "temperature_max": [MessageHandler(Filters.text, add_clothes_get_temperature_max, pass_user_data=True)]
+            "temperature_max": [MessageHandler(Filters.text, add_clothes_get_temperature_max, pass_user_data=True)],
+            "clth_photo": [MessageHandler(Filters.photo, add_clothes_get_photo, pass_user_data=True)]
         },
         fallbacks=[MessageHandler(Filters.text | Filters.video | Filters.photo | Filters.document, dontknow,
                                   pass_user_data=True)]
     )
     dp.add_handler(add_clothes)
+    change_location = ConversationHandler(
+        entry_points=[RegexHandler('^(Сменить локацию)$', change_location_start),
+                      CommandHandler('location', change_location_start)],
+        states={
+            'get_location': [MessageHandler(Filters.text | Filters.location, change_location_get_location)]
+        },
+        fallbacks=[MessageHandler(Filters.text | Filters.video | Filters.photo | Filters.document, dontknow)]
+    )
+    dp.add_handler(change_location)
     dp.add_handler(CommandHandler('help', get_help))
     mybot.start_polling()
     mybot.idle()
