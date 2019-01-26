@@ -135,6 +135,7 @@ def create_app():
                 return render_template('add_clothes.html', add_clothes_fail=True)
             elif photo_file and allowed_file(photo_file.filename):
                 filename = secure_filename(photo_file.filename)
+                # TODO change name for photo_file then we save it
                 photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max, filename)
                 db.session.add(new_clothes)

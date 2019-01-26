@@ -15,8 +15,12 @@ Flask-Babel==0.12.2
 Flask-Login==0.4.1
 Flask-Migrate==2.3.1
 Flask-SQLAlchemy==2.3.2
+Flask-Uploads==0.2.1
 Flask-WTF==0.14.2
+-e git+git@gitlab.com:lp-projects/virtual-wardrobe.git@8a857b0ebf0d75aa3e3011ba2b7a61cf5d10973c#egg=flaskr
 future==0.17.1
+geographiclib==1.49
+geopy==1.18.1
 idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10
