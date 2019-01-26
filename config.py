@@ -12,6 +12,8 @@ PROXY_URL = 'socks5://t1.learn.python.ru:1080'
 PROXY_LOGIN = 'learn'
 PROXY_PASSWORD = 'python'
 TELEGRAM_TOKEN = os.getenv('TOKEN', '')
+upload_folder = os.path.dirname(os.path.abspath(__file__)) + '/wardrobe/static/photos'
+allowed_extensions = set(['png', 'jpg', 'jpeg', 'gif'])
 
 
 class Default:

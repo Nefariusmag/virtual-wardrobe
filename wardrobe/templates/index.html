@@ -24,15 +24,17 @@
         </div>
         <div class="column_central">
             <h1>{{ _('Our ') }}<span class="black_background">{{ _(' advice ') }}</span></h1>
+            <a href="/add_clothes">{{ _('Add new clothes') }}</a><br/><br/>
             {% if list_clothes != [] and list_clth_types != [] %}
-                <table class="table">
+                <table class="table" >
                     <thead>
                     <tr>
-                        <th scope="col">{{ _('Type Clothes') }}</th>
-                        <th scope="col">{{ _('Name clothes') }}</th>
+                        <th scope="col">{{ _('Type') }}</th>
+                        <th scope="col">{{ _('Name') }}</th>
+                        <th scope="col">{{ _('Photo') }}</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="tbody_central">
                     {% for clth_type in list_clth_types %}
                         <tr>
                             <th scope="row">{{ _(clth_type.desc) }}</th>
@@ -43,6 +45,13 @@
                                     {% endif %}
                                 {% endfor %}
                             </td>
+                            <td>
+                                {% for clothes in list_clothes %}
+                                    {% if clothes.clth_type == clth_type.id %}
+                                        <img src="static/photos/{{ clothes.file_path }}" alt="{{ clothes.name }}" width="300" height="300"><br/>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -50,14 +59,12 @@
             {% else %}
                 {{ _('You haven\'t clothes in the wardrobe.') }}
             {% endif %}
-            <a href="/add_clothes"><p
-                    style="margin-right: -500px; text-align: left; color: black; text-decoration: underline;">{{ _('Add new clothes') }}
-                <p/></a>
         </div>
     {% else %}
         {{ _('Now, it can\'t work') }}
     {% endif %}
 </div>
+
 <!--
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

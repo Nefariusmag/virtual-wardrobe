@@ -1,12 +1,17 @@
-import config
-from flask import Flask, request, abort, redirect, render_template
+import os
+
+from flask import Flask, abort, render_template, request, redirect, url_for, send_from_directory
 from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
+from werkzeug.utils import secure_filename
 
-from wardrobe import db, migrate
-from users.models import User
+import config
 from clothes.models import Clothes, import_default_clothe_types
+from users.models import User
+from wardrobe import db, migrate
 from weather import Weather
+
+from config import upload_folder, allowed_extensions
 
 
 def create_app():
@@ -27,10 +32,11 @@ def create_app():
     login_manager.login_view = "login"
     login_manager.init_app(app)
 
-    @babel.localeselector
-    def get_locale():
-        from config import LANGUAGES
-        return request.accept_languages.best_match(LANGUAGES)
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    app.config['UPLOAD_FOLDER'] = upload_folder
+
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1] in allowed_extensions
 
     @app.route('/')
     @login_required
@@ -86,6 +92,7 @@ def create_app():
             return render_template('registration.html')
 
     @app.route('/location', methods=['GET', 'POST'])
+    @login_required
     def change_location():
         if request.method == 'POST':
             city = request.form['city']
@@ -115,6 +122,7 @@ def create_app():
         return redirect('/')
 
     @app.route('/add_clothes', methods=['GET', 'POST'])
+    @login_required
     def add_clothes():
         if request.method == 'POST':
             user_id = current_user.id
@@ -122,13 +130,18 @@ def create_app():
             type = Clothes.Types.query.filter(Clothes.Types.desc == request.form['type']).first().id
             temp_min = request.form['temp_min']
             temp_max = request.form['temp_max']
+            photo_file = request.files['photo']
             if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
                 return render_template('add_clothes.html', add_clothes_fail=True)
-            else:
-                new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max)
+            elif photo_file and allowed_file(photo_file.filename):
+                filename = secure_filename(photo_file.filename)
+                photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max, filename)
                 db.session.add(new_clothes)
                 db.session.commit()
                 return redirect('/add_clothes')
+            else:
+                return render_template('add_clothes.html', add_clothes_fail=True)
         else:
             return render_template('add_clothes.html')
 

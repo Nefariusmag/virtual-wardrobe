@@ -8,7 +8,7 @@ body {
 }
 
 h1 {
-    font: 250% Inconsolata;
+    font: 200% Inconsolata;
     font-weight: normal;
 }
 
@@ -16,12 +16,12 @@ h1 {
     float: left;
     width: 30%;
     margin-right: 50px;
-    margin-top: 25px;
+    margin-top: 10px;
 }
 
 .column_central {
     float: left;
-    margin-top: 25px;
+    margin-top: 10px;
     margin-left: 150px;
 }
 
@@ -45,4 +45,12 @@ a {
 .form_size {
     font: 18px Inconsolata;
     line-height: 2;
+}
+
+thead, tbody { display: block; }
+
+.tbody_central {
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

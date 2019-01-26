@@ -15,7 +15,7 @@
 <h1>{{ _('Add ') }}<span class="black_background">{{ _(' new ') }}</span>{{ _(' clothes in your wardrobe') }}</h1>
 
 {{ _('Write information about your clothes:') }}<br/><br/>
-<form action="" method="post" class="form_size">
+<form action="" method="post" class="form_size" enctype=multipart/form-data>
 <table class="table">
   <thead>
     <tr>
@@ -23,6 +23,7 @@
       <th scope="col">{{ _('Type') }}</th>
       <th scope="col">{{ _('Temperature Min') }}</th>
       <th scope="col">{{ _('Temperature Max') }}</th>
+      <th scope="col">{{ _('Photo') }}</th>
     </tr>
   </thead>
   <tbody>
@@ -43,6 +44,7 @@
       </td>
       <td><input type=number name=temp_min placeholder="{{ _('Enter temperature min') }}"></td>
       <td><input type=number name=temp_max placeholder="{{ _('Enter temperature max') }}"></td>
+      <td><input type=file name=photo></td>
     </tr>
   </tbody>
 </table>
