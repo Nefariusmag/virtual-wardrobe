@@ -1,16 +1,15 @@
-import os
+import os, config
 
 from flask import Flask, abort, render_template, request, redirect, url_for, send_from_directory
 from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
 
-import config
-from clothes.models import Clothes, import_default_clothe_types
-from users.models import User
 from wardrobe import db, migrate
+from rest import WardrobeAPI as WAPI
+from users.models import User, UserRole
+from clothes.models import Clothes, import_default_clothe_types
 from weather import Weather
-
 from config import upload_folder, allowed_extensions
 
 
@@ -37,6 +36,12 @@ def create_app():
 
     def allowed_file(filename):
         return '.' in filename and filename.rsplit('.', 1)[1] in allowed_extensions
+
+    @app.route('/api/<version>/<apicmd>', methods=['GET', 'POST'])
+    def api(version='', apicmd=''):
+        args = (request.args, request.headers, request.get_json(force=True, silent=True))
+        kw_api_args = {'v': version, 'apicmd': apicmd, 'method': request.method}
+        return WAPI(db, *args, **kw_api_args).response
 
     @app.route('/')
     @login_required
@@ -83,6 +88,7 @@ def create_app():
             if registered_user is None:
                 new_user = User(username)
                 new_user.set_user_password(password)
+                new_user.role = db.session.query(UserRole.id).filter(UserRole.role == 'user').first().id
                 db.session.add(new_user)
                 db.session.commit()
                 return redirect('/')

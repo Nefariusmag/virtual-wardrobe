@@ -1,4 +1,4 @@
-import requests
+import requests, datetime
 from flask import request
 from flask_login import UserMixin
 from wardrobe import db
@@ -14,7 +14,9 @@ class User(UserMixin, db.Model):
     geo = db.Column(db.String(128))
     lang = db.Column(db.String(5))
     ip = db.Column(db.String(15))
+    role = db.Column(db.Integer, db.ForeignKey('user_roles.id'))
     clothes = db.relationship('Clothes')
+    registered = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def __init__(self, username):
         self.username = username
@@ -79,3 +81,19 @@ class User(UserMixin, db.Model):
             user_geo = {'country_code2': 'RU', 'city': 'Moscow'}
 
         return user_geo
+
+    class UserToken(db.Model):
+        __tablename__ = 'user_tokens'
+        id = db.Column(db.Integer, primary_key=True)
+        user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+        token = db.Column(db.String(128))
+        type = db.Column(db.Integer)
+        issue = db.Column(db.DateTime)
+        expire = db.Column(db.DateTime)
+
+
+class UserRole(db.Model):
+    __tablename__ = 'user_roles'
+    id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.String(64), unique=True, index=True)
+    # rights = db.Column(db.String(128))
