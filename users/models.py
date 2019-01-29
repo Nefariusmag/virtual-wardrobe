@@ -86,10 +86,22 @@ class User(UserMixin, db.Model):
         __tablename__ = 'user_tokens'
         id = db.Column(db.Integer, primary_key=True)
         user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-        token = db.Column(db.String(128))
+        token = db.Column(db.String(16), unique=True)
         type = db.Column(db.Integer)
-        issue = db.Column(db.DateTime)
+        issue = db.Column(db.DateTime, default=datetime.datetime.utcnow)
         expire = db.Column(db.DateTime)
+
+        def __init__(self, user_id, token_type='user', token_expire=datetime.datetime(2099, 1, 1, 0, 0, 0)):
+            self.user_id = user_id
+            self.type = token_type
+            self.expire = token_expire
+
+            if token_type == 'user':
+                from secrets import token_urlsafe
+                self.token = token_urlsafe(16)
+            if token_type == 'totp':
+                from pyotp import random_base32
+                self.token = random_base32(16)
 
 
 class UserRole(db.Model):

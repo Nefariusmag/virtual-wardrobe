@@ -91,6 +91,9 @@ def create_app():
                 new_user.role = db.session.query(UserRole.id).filter(UserRole.role == 'user').first().id
                 db.session.add(new_user)
                 db.session.commit()
+                db.session.add(new_user.UserToken(user_id=new_user.id))
+                db.session.add(new_user.UserToken(user_id=new_user.id, token_type='totp'))
+                db.session.commit()
                 return redirect('/')
             else:
                 return render_template('registration.html', user_exit=True)
