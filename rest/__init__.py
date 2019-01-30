@@ -2,9 +2,6 @@ import json
 
 from rest.handlers import APIHandlers
 from rest.utils import token_auth_required
-from wardrobe import db
-from users.models import User
-from clothes.models import Clothes, import_default_clothe_types
 
 
 def response_wrapper(*args):

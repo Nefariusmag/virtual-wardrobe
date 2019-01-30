@@ -2,7 +2,7 @@ from rest.utils import token_auth_required, model2dict
 
 from wardrobe import db
 from users.models import User, UserRole
-from clothes.models import Clothes, import_default_clothe_types
+from clothes.models import Clothes
 
 
 class APIHandlers(object):

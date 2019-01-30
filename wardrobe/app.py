@@ -5,10 +5,10 @@ from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
 
-from wardrobe import db, migrate
+from wardrobe import db, migrate, InitDefaults
 from rest import WardrobeAPI as WAPI
 from users.models import User, UserRole
-from clothes.models import Clothes, import_default_clothe_types
+from clothes.models import Clothes
 from weather import Weather
 from config import upload_folder, allowed_extensions
 
@@ -23,7 +23,9 @@ def create_app():
     db.create_all(app=app)
 
     with app.app_context():
-        import_default_clothe_types(app.root_path)
+        initd = InitDefaults(('import_default_clothe_types', app.root_path),
+                             ('import_default_user_roles', ('admin', 'service', 'user')))
+        initd()
 
     babel = Babel(app)
 
@@ -52,7 +54,8 @@ def create_app():
         list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).filter(
             Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
 
-        list_clth_types = Clothes.Types.query.filter(Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
+        list_clth_types = Clothes.Types.query.filter(
+            Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
 
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
                                user_ip=str(current_user.ip), user_city=current_user.geo, user_id=current_user.id,
