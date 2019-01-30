@@ -14,6 +14,7 @@ class InitDefaults(object):
         for arg in self.args:
             run_func = getattr(self, arg[0], 0)
             if run_func:
+                # todo: validate arguments consistency
                 run_func(*arg[1:])
 
     def import_default_clothe_types(self, approot, datafile='default_clothe_types.csv'):
