@@ -1,4 +1,5 @@
 from functools import wraps
+import pyotp
 
 from wardrobe import db
 from users.models import User, UserRole
@@ -10,17 +11,24 @@ def token_auth_required(func):
         hnd_params = getattr(args[0], 'params', {})
         if hnd_params:
             uid = int(hnd_params.get('user_id', 0))
-            if uid:
-                if User.query.filter(User.id == uid).first():
-                    token = hnd_params.get('token', 'FALSE')
-                    tuid = getattr(User.UserToken.query.
-                                   filter(User.UserToken.token == token).
-                                   first(), 'user_id', 0)
-                    if tuid:
-                        # TODO: Validate if it is a service user token
-                        if int(tuid) == int(uid):
-                            return func(*args, **kwargs)
-
+            mb_service = hnd_params.get('service', 0)
+            mb_token = hnd_params.get('token', 0)
+            if mb_service:
+                mb_user = User.query.filter(User.username == mb_service).first()
+                if UserRole.query.filter(UserRole.id == mb_user.role).filter(UserRole.role == 'service').first():
+                    uid = getattr(mb_user, 'id', 0)
+                else:
+                    uid = 0
+            if uid and (User.query.filter(User.id == uid).first()):
+                if mb_token:
+                    usr_token = getattr(User.UserToken.query.filter(
+                        (User.UserToken.user_id == uid) & (User.UserToken.type == 'user')).first(), 'token', 0)
+                    if len(mb_token) == 6:
+                        usr_token = User.UserToken.query.filter(
+                            (User.UserToken.user_id == uid) & (User.UserToken.type == 'totp')).first()
+                        usr_token = pyotp.TOTP(usr_token.token).now()
+                    if usr_token == mb_token:
+                        return func(*args, **kwargs)
         return []
 
     return decorated_handler
