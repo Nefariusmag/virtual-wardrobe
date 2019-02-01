@@ -2,6 +2,22 @@ import requests, datetime
 from flask import request
 from flask_login import UserMixin
 from wardrobe import db
+from config import CONNECTION_ERRORS
+
+
+def get_srv_ip():
+    _ip = {}
+    try:
+        _ip = requests.get('http://2ip.ru', headers={'user-agent': 'curl'}, timeout=1)
+    except CONNECTION_ERRORS:
+        _ip['status_code'] = 404
+
+    if getattr(_ip, 'status_code', 0) == 200:
+        _ip = _ip.text.replace('\n', '')
+    else:
+        _ip = '46.39.56.60'
+
+    return _ip
 
 
 class User(UserMixin, db.Model):
@@ -22,50 +38,43 @@ class User(UserMixin, db.Model):
         self.username = username
         self.password = ''
         self.email = f'{username}@mail.debug'
-        self.lang = self.get_language()
-        self.ip = self.get_user_ip()
-        self.full_geo = self.get_user_geo()
-        self.geo = '{},{}'.format(self.full_geo['city'], self.full_geo['country_code2'])
+        self.lang = ''
+        self.get_language()
+        self.ip = ''
+        self.get_user_ip()
+        self.full_geo = {}
+        self.geo = ''
+        self.get_user_geo()
 
     def get_language(self):
         try:
-            return request.accept_languages[0][0]
-        except:
-            return 'ru'
+            self.lang = request.accept_languages[0][0]
+        except KeyError:
+            self.lang = 'ru'
 
     def set_user_password(self, password):
         self.password = password
 
     def get_user_ip(self):
-        addr_header = 'HTTP_X_FORWARDED_FOR'
         try:
-            if request.environ.get(addr_header,0) == 0:
-                addr_header = 'REMOTE_ADDR'
-            _ip = request.environ[addr_header]
-        except:
+            _ip = request.environ['HTTP_X_FORWARDED_FOR']
+        except KeyError:
+            _ip = request.environ['REMOTE_ADDR']
+        else:
             _ip = '46.39.56.60'
 
         _ip_bit = _ip.split('.')
 
         if (_ip_bit[0] == '192') and (_ip_bit[1] == '168'):
-            _ip = self.get_srv_ip()
+            _ip = get_srv_ip()
         elif (_ip_bit[0] == '172') and (_ip_bit[1] in range(16, 32, 1)):
-            _ip = self.get_srv_ip()
+            _ip = get_srv_ip()
         elif _ip_bit[0] == '10':
-            _ip = self.get_srv_ip()
+            _ip = get_srv_ip()
         elif _ip_bit[0] == '127':
-            _ip = self.get_srv_ip()
+            _ip = get_srv_ip()
 
-        return _ip
-
-    def get_srv_ip(self):
-        _ip = requests.get('https://api.ipify.org')
-        if _ip.status_code == 200:
-            _ip = _ip.text
-        else:
-            _ip = '46.39.56.60'
-
-        return _ip
+        self.ip = _ip
 
     def get_user_geo(self):
         from config import GEOIP_APIKEY, GEOIP_URL
@@ -74,13 +83,18 @@ class User(UserMixin, db.Model):
             'ip': self.ip
         }
 
-        user_geo = requests.get(GEOIP_URL, params)
-        if user_geo.status_code == 200:
-            user_geo = user_geo.json()
-        else:
-            user_geo = {'country_code2': 'RU', 'city': 'Moscow'}
+        try:
+            self.full_geo = requests.get(GEOIP_URL, params, timeout=1)
+        except CONNECTION_ERRORS:
+            self.full_geo['status_code'] = 404
 
-        return user_geo
+        if getattr(self.full_geo, 'status_code', 0) == 200:
+            self.full_geo = self.full_geo.json()
+            self.geo = '{},{}'.format(self.full_geo['city'], self.full_geo['country_code2'])
+        else:
+            self.full_geo = {}
+            self.geo = 'Cant determine your current location.'
+
 
     class UserToken(db.Model):
         __tablename__ = 'user_tokens'

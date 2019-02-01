@@ -1,4 +1,7 @@
 import os
+from requests import exceptions as req_exceptions
+from inspect import getmembers, isclass
+CONNECTION_ERRORS = tuple([x[1] for x in getmembers(req_exceptions) if isclass(x[1])])
 db_host = os.getenv('DB_HOST', 'localhost')
 db_name = os.getenv('DB_NAME', 'postgres')
 db_login = os.getenv('DB_LOGIN', 'postgres')
@@ -28,4 +31,3 @@ class Default:
 class Debug(Default):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
-
