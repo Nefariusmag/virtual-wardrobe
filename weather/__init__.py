@@ -1,4 +1,6 @@
 import requests
+from config import WEATHER_APIKEY, WEATHER_URL
+from config import CONNECTION_ERRORS
 
 
 class Weather(object):
@@ -14,16 +16,19 @@ class Weather(object):
         self.get_weather()
 
     def get_weather(self):
-        from config import WEATHER_APIKEY, WEATHER_URL
+        _weather = {}
         params = {
             'q': self._city,
             'APPID': WEATHER_APIKEY,
             'units': 'metric',
             'lang': self._lang
         }
-        _weather = requests.get(WEATHER_URL, params)
+        try:
+            _weather = requests.get(WEATHER_URL, params, timeout=1)
+        except CONNECTION_ERRORS:
+            _weather['status_code'] = 404
 
-        if _weather.status_code == 200:
+        if getattr(_weather, 'status_code', 0) == 200:
             _weather = _weather.json()
 
             _conditions, _icon, _temp, _humidity, _wind = '', '', '', '', {}
@@ -37,7 +42,8 @@ class Weather(object):
                 _humidity = _weather['main']['humidity']
             if 'wind' in _weather:
                 _wind = _weather['wind']
-                _wind_directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW',
+                _wind_directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W',
+                                    'WNW',
                                     'NW', 'NNW']
                 if _wind['deg'] < 0:
                     _wind['deg'] += 180
@@ -51,8 +57,8 @@ class Weather(object):
 
     def __str__(self):
         return '{}. {} °C, {} %, {} m/s {} ({}°)'.format(self.conditions,
-                                                      self.temp,
-                                                      self.humidity,
-                                                      self.wind['speed'],
-                                                      self.wind['dir'],
-                                                      self.wind['deg'])
+                                                         self.temp,
+                                                         self.humidity,
+                                                         self.wind['speed'],
+                                                         self.wind['dir'],
+                                                         self.wind['deg'])
