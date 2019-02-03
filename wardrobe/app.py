@@ -45,7 +45,7 @@ def create_app():
         kw_api_args = {'v': version, 'apicmd': apicmd, 'method': request.method}
         return WAPI(db, *args, **kw_api_args).response
 
-    @app.route('/')
+    @app.route('/', methods=['GET', 'POST'])
     @login_required
     def index():
         weather = Weather(current_user.geo, current_user.lang)
@@ -56,6 +56,31 @@ def create_app():
 
         list_clth_types = Clothes.Types.query.filter(
             Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
+
+        if request.method == "POST" and request.form['type_look'] != 'all':
+        # TODO change this shit on some color sort
+            def get_list_look(color):
+                if color == 'red':
+                    list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user.id) \
+                        .filter(Clothes.color_blue <= 140) \
+                        .filter(Clothes.color_red >= 120) \
+                        .filter(Clothes.color_green <= 120).all()
+                if color == 'green':
+                    list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user.id) \
+                        .filter(Clothes.color_blue <= 120) \
+                        .filter(Clothes.color_red <= 120) \
+                        .filter(Clothes.color_green >= 140).all()
+                if color == 'blue':
+                    list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user.id) \
+                        .filter(Clothes.color_blue >= 140) \
+                        .filter(Clothes.color_red <= 120) \
+                        .filter(Clothes.color_green <= 130).all()
+
+                return list_color_type_clothes
+
+            list_clothes = get_list_look(request.form['type_look'])
+            list_clth_types = Clothes.Types.query.filter(
+                Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
 
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
                                user_ip=str(current_user.ip), user_city=current_user.geo, user_id=current_user.id,
