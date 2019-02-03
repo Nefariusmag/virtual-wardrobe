@@ -4,6 +4,8 @@ from telega.handler import id_generator, change_location_start, change_location_
     dontknow, add_clothes_start, add_clothes_get_name, add_clothes_get_type, add_clothes_get_temperature_max, \
     add_clothes_get_temperature_min, get_help, add_clothes_get_photo
 from config import PROXY_URL, TELEGRAM_TOKEN, PROXY_PASSWORD, PROXY_LOGIN
+from telegram.ext import messagequeue as mq
+from datetime import time
 
 token = TELEGRAM_TOKEN
 
@@ -17,6 +19,23 @@ logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
 
 from wardrobe.app import create_app
 import config
+
+
+@mq.queuedmessage
+def start_get_clothes(bot, job):
+    get_clothes(bot, job.context)
+
+
+def send_clothes(bot, update, args, job_queue):
+    try:
+        list_schedule_time_str = str(args[0]).split(':')
+        list_schedule_time_int = list(map(int, list_schedule_time_str))
+        schedule_time = time(list_schedule_time_int[0], list_schedule_time_int[1])
+        # TODO add save in db
+        # new_job = job_queue.run_daily(start_get_clothes, time=schedule_time, context=update)
+        # my_jobs.append(new_job)
+    except (IndexError, ValueError):
+        update.message.reply_text("Введите число секунд после команды /reminder")
 
 
 def connect_db():
@@ -58,10 +77,18 @@ def main():
     )
     dp.add_handler(change_location)
     dp.add_handler(CommandHandler('help', get_help))
+
+    mybot.bot._msg_queue = mq.MessageQueue()
+    mybot.bot._is_messages_queued_default = True
+
+    dp.add_handler(
+        CommandHandler("reminder", send_clothes, pass_args=True, pass_job_queue=True)
+    )
     mybot.start_polling()
     mybot.idle()
 
 
 app = connect_db()
 if __name__ == '__main__':
+    # my_jobs = []
     main()
