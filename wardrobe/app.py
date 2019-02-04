@@ -167,13 +167,15 @@ def create_app():
             type = Clothes.Types.query.filter(Clothes.Types.desc == request.form['type']).first().id
             temp_min = request.form['temp_min']
             temp_max = request.form['temp_max']
-            photo_file = request.files['photo']
-            if clothes_name == '' or type == '' or temp_max == '' or temp_min == '':
-                return render_template('add_clothes.html', add_clothes_fail=True)
-            elif photo_file and allowed_file(photo_file.filename):
-                filename = secure_filename(photo_file.filename)
-                # TODO change name for photo_file then we save it
-                photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            photo_file = getattr(request.files, 'photo', 0)
+            if photo_file:
+                if allowed_file(photo_file.filename):
+                    filename = secure_filename(photo_file.filename)
+                    # TODO change name for photo_file then we save it
+                    photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                filename = ''
+            if clothes_name and type and temp_max and temp_min:
                 new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max, filename)
                 db.session.add(new_clothes)
                 db.session.commit()
