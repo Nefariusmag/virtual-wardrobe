@@ -25,9 +25,11 @@ class Clothes(db.Model):
         self.temperature_min = temperature_min
         self.temperature_max = temperature_max
         self.file_path = file_path
-        self.color_red = int(self.get_dominant_color()[0])
-        self.color_green = int(self.get_dominant_color()[1])
-        self.color_blue = int(self.get_dominant_color()[2])
+        if file_path:
+            clth_colors = [int(x) for x in self.get_dominant_color()[:3]]
+        else:
+            clth_colors = [255, 255, 255]
+        self.color_red, self.color_green, self.color_blue = clth_colors
 
     def get_dominant_color(self):
         from config import upload_folder
