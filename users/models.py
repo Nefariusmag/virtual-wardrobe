@@ -95,7 +95,6 @@ class User(UserMixin, db.Model):
             self.full_geo = {}
             self.geo = 'Cant determine your current location.'
 
-
     class UserToken(db.Model):
         __tablename__ = 'user_tokens'
         id = db.Column(db.Integer, primary_key=True)

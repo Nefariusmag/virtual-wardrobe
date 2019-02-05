@@ -37,7 +37,8 @@ class APIHandlers(object):
             # TODO: Add input validation for each field
             need_update = 0
             for k, v in self.params['data'].items():
-                if getattr(user, k, 0) and k not in ['id']:
+                cv = getattr(user, k, 0)
+                if cv and (cv != v) and (k not in ['id']):
                     setattr(user, k, v)
                     need_update = 1
                 else:
@@ -55,10 +56,7 @@ class APIHandlers(object):
 
         if self.params['method'] == 'GET':
             if user.clothes:
-                clothes = []
-                for clothe in user.clothes:
-                    clothe = model2dict(clothe)
-                    clothes.append(clothe)
+                clothes = [model2dict(clothe) for clothe in user.clothes]
             return [200, ('user', user.username), ('clothes', clothes)]
 
         if (self.params['method'] == 'POST') and (self.params['data']):
