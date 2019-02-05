@@ -48,7 +48,7 @@ class User(UserMixin, db.Model):
     def get_language(self):
         try:
             self.lang = request.accept_languages[0][0]
-        except KeyError:
+        except:
             self.lang = 'ru'
 
     def set_user_password(self, password):
@@ -57,10 +57,11 @@ class User(UserMixin, db.Model):
     def get_user_ip(self):
         try:
             _ip = request.environ['HTTP_X_FORWARDED_FOR']
-        except KeyError:
-            _ip = request.environ['REMOTE_ADDR']
-        else:
-            _ip = '46.39.56.60'
+        except:
+            try:
+                _ip = request.environ['REMOTE_ADDR']
+            except:
+                _ip = '46.39.56.60'
 
         _ip_bit = _ip.split('.')
 
@@ -93,7 +94,6 @@ class User(UserMixin, db.Model):
         else:
             self.full_geo = {}
             self.geo = 'Cant determine your current location.'
-
 
     class UserToken(db.Model):
         __tablename__ = 'user_tokens'
