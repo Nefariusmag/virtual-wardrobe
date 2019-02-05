@@ -48,3 +48,35 @@ class APIHandlers(object):
                 return [200, ('msg', "User's data is updated")]
 
         return []
+
+    @token_auth_required
+    def handler_clothes(self):
+        user = User.query.filter(User.id == self.params['user_id']).one()
+
+        if self.params['method'] == 'GET':
+            if user.clothes:
+                clothes = []
+                for clothe in user.clothes:
+                    clothe = model2dict(clothe)
+                    clothes.append(clothe)
+            return [200, ('user', user.username), ('clothes', clothes)]
+
+        if (self.params['method'] == 'POST') and (self.params['data']):
+            need_update = 0
+            n_clothes = self.params['data'].get('clothes', 0)
+            if n_clothes:
+                for n_clothe in n_clothes:
+                    n_clothe_id = n_clothe.get('id', 0)
+                    if n_clothe_id:
+                        c_clothe = [x for x in user.clothes if x.id == int(n_clothe_id)][0]
+                        for k, v in n_clothe.items():
+                            cv = getattr(c_clothe, k, 0)
+                            if cv and (cv != v) and (k not in ['id']):
+                                setattr(c_clothe, k, v)
+                                need_update = 1
+
+            if need_update:
+                db.session.commit()
+                return [200, ('msg', "Clothes's data is updated")]
+
+        return []
