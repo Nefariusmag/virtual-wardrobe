@@ -35,7 +35,7 @@ def send_clothes(bot, update, args, job_queue):
         # new_job = job_queue.run_daily(start_get_clothes, time=schedule_time, context=update)
         # my_jobs.append(new_job)
     except (IndexError, ValueError):
-        update.message.reply_text("Введите число секунд после команды /reminder")
+        update.message.reply_text("Write time after /reminder")
 
 
 def connect_db():
@@ -51,8 +51,6 @@ def main():
 
     dp.add_handler(CommandHandler("start", registration_user))
     dp.add_handler(CommandHandler("get", get_clothes))
-    # dp.add_handler(CommandHandler("location", change_location))
-    # TODO /help
     add_clothes = ConversationHandler(
         entry_points=[RegexHandler('^(Добавить шмотки)$', add_clothes_start, pass_user_data=True),
                       CommandHandler('add', add_clothes_start, pass_user_data=True)],
@@ -81,9 +79,7 @@ def main():
     mybot.bot._msg_queue = mq.MessageQueue()
     mybot.bot._is_messages_queued_default = True
 
-    dp.add_handler(
-        CommandHandler("reminder", send_clothes, pass_args=True, pass_job_queue=True)
-    )
+    dp.add_handler(CommandHandler("reminder", send_clothes, pass_args=True, pass_job_queue=True))
     mybot.start_polling()
     mybot.idle()
 

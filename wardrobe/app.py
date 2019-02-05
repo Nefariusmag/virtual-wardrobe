@@ -1,4 +1,4 @@
-import os, config
+import os, config, datetime
 
 from flask import Flask, abort, render_template, request, redirect, url_for, send_from_directory
 from flask_babel import Babel
@@ -11,6 +11,27 @@ from users.models import User, UserRole
 from clothes.models import Clothes
 from weather import Weather
 from config import upload_folder, allowed_extensions
+
+
+# TODO change this shit on some color sort
+def get_list_look(color, current_user_id):
+    if color == 'red':
+        list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user_id) \
+            .filter(Clothes.color_blue <= 140) \
+            .filter(Clothes.color_red >= 120) \
+            .filter(Clothes.color_green <= 120).all()
+    if color == 'green':
+        list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user_id) \
+            .filter(Clothes.color_blue <= 120) \
+            .filter(Clothes.color_red <= 120) \
+            .filter(Clothes.color_green >= 140).all()
+    if color == 'blue':
+        list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user_id) \
+            .filter(Clothes.color_blue >= 140) \
+            .filter(Clothes.color_red <= 120) \
+            .filter(Clothes.color_green <= 130).all()
+
+    return list_color_type_clothes
 
 
 def create_app():
@@ -35,6 +56,8 @@ def create_app():
 
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     app.config['UPLOAD_FOLDER'] = upload_folder
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
 
     def allowed_file(filename):
         return '.' in filename and filename.rsplit('.', 1)[1] in allowed_extensions
@@ -54,33 +77,10 @@ def create_app():
         list_clothes = Clothes.query.filter(Clothes.user_id == current_user.id).filter(
             Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
 
-        list_clth_types = Clothes.Types.query.filter(
-            Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
-
         if request.method == "POST" and request.form['type_look'] != 'all':
-        # TODO change this shit on some color sort
-            def get_list_look(color):
-                if color == 'red':
-                    list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user.id) \
-                        .filter(Clothes.color_blue <= 140) \
-                        .filter(Clothes.color_red >= 120) \
-                        .filter(Clothes.color_green <= 120).all()
-                if color == 'green':
-                    list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user.id) \
-                        .filter(Clothes.color_blue <= 120) \
-                        .filter(Clothes.color_red <= 120) \
-                        .filter(Clothes.color_green >= 140).all()
-                if color == 'blue':
-                    list_color_type_clothes = Clothes.query.filter(Clothes.user_id == current_user.id) \
-                        .filter(Clothes.color_blue >= 140) \
-                        .filter(Clothes.color_red <= 120) \
-                        .filter(Clothes.color_green <= 130).all()
+            list_clothes = get_list_look(request.form['type_look'], current_user.id)
 
-                return list_color_type_clothes
-
-            list_clothes = get_list_look(request.form['type_look'])
-            list_clth_types = Clothes.Types.query.filter(
-                Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
+        list_clth_types = Clothes.Types.query.filter(Clothes.Types.id.in_([int(i.clth_type) for i in list_clothes])).all()
 
         return render_template('index.html', user_login=current_user.username, weather=str(weather),
                                user_ip=str(current_user.ip), user_city=current_user.geo, user_id=current_user.id,
@@ -165,17 +165,17 @@ def create_app():
             user_id = current_user.id
             clothes_name = request.form['clothes_name']
             type = Clothes.Types.query.filter(Clothes.Types.desc == request.form['type']).first().id
-            temp_min = request.form['temp_min']
-            temp_max = request.form['temp_max']
+            temp_min = int(request.form['temp_min'])
+            temp_max = int(request.form['temp_max'])
             photo_file = getattr(request.files, 'photo', 0)
-            if photo_file:
+            try:
+                photo_file = request.files['photo']
                 if allowed_file(photo_file.filename):
-                    filename = secure_filename(photo_file.filename)
-                    # TODO change name for photo_file then we save it
+                    filename = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")}.jpg'
                     photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            else:
+            except:
                 filename = ''
-            if clothes_name and type and temp_max and temp_min:
+            if clothes_name and type and temp_max and temp_min and temp_max >= temp_min:
                 new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max, filename)
                 db.session.add(new_clothes)
                 db.session.commit()
