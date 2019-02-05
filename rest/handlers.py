@@ -27,7 +27,7 @@ class APIHandlers(object):
 
     @token_auth_required
     def handler_user(self):
-        user = User.query.filter(User.id == self.params['user_id']).one()
+        user = User.query.filter(User.id == self.params['uid']).one()
 
         if self.params['method'] == 'GET':
             user = model2dict(user, ['password'])
@@ -52,7 +52,7 @@ class APIHandlers(object):
 
     @token_auth_required
     def handler_clothes(self):
-        user = User.query.filter(User.id == self.params['user_id']).one()
+        user = User.query.filter(User.id == self.params['uid']).one()
 
         if self.params['method'] == 'GET':
             if user.clothes:
