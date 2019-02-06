@@ -25,7 +25,7 @@ class APIHandlers(object):
             return handler_response
         return []
 
-    @token_auth_required
+    @token_auth_required()
     def handler_user(self):
         user = User.query.filter(User.id == self.params['uid']).first()
 
@@ -52,7 +52,7 @@ class APIHandlers(object):
 
         return []
 
-    @token_auth_required
+    @token_auth_required()
     def handler_clothes(self):
         user = User.query.filter(User.id == self.params['uid']).first()
         if user:

@@ -5,40 +5,46 @@ from wardrobe import db
 from users.models import User, UserRole
 
 
-def token_auth_required(func, auth_roles='any'):
-    @wraps(func)
-    def decorated_handler(*args, **kwargs):
-        hnd_params = getattr(args[0], 'params', {})
-        if hnd_params:
-            mb_uid = hnd_params.get('uid', 0)
-            if mb_uid:
-                mb_uid = int(mb_uid)
-            mb_token = hnd_params.pop('token', 0)
+def token_auth_required(auth_roles=[]):
+    def decorator(func):
+        @wraps(func)
+        def wrapped_handler(*args, **kwargs):
+            hnd_params = getattr(args[0], 'params', {})
+            if hnd_params:
+                mb_uid = hnd_params.get('uid', 0)
+                if mb_uid:
+                    mb_uid = int(mb_uid)
+                mb_token = hnd_params.pop('token', 0)
 
-            if mb_token:
-                uid = getattr(
-                    User.UserToken.query.filter(
-                        (User.UserToken.token == mb_token) & (User.UserToken.type == 'user')
-                    ).first(),
-                    'user_id', 0)
-                if uid:
-                    uid_user = User.query.filter(User.id == uid).first()
-                    uid_user_role = getattr(UserRole.query.filter(UserRole.id == uid_user.role).first(), 'role', '')
-                    hnd_params['init_role'] = uid_user_role
-                    if mb_uid:
-                        if uid_user_role in ['admin', 'service']:
-                            return func(*args, **kwargs)
-                        if mb_uid and uid == mb_uid:
-                            return func(*args, **kwargs)
+                if mb_token:
+                    uid = getattr(
+                        User.UserToken.query.filter(
+                            (User.UserToken.token == mb_token) & (User.UserToken.type == 'user')
+                        ).first(),
+                        'user_id', 0)
+                    if uid:
+                        uid_user = User.query.filter(User.id == uid).first()
+                        uid_user_role = getattr(UserRole.query.filter(UserRole.id == uid_user.role).first(), 'role', '')
+                        hnd_params['init_role'] = uid_user_role
+                        if auth_roles:
+                            if uid_user_role not in auth_roles:
+                                return []
+                        if mb_uid:
+                            if uid_user_role in ['admin', 'service']:
+                                return func(*args, **kwargs)
+                            if mb_uid and uid == mb_uid:
+                                return func(*args, **kwargs)
+                            else:
+                                return []
                         else:
-                            return []
-                    else:
-                        hnd_params['uid'] = str(uid)
+                            hnd_params['uid'] = str(uid)
 
-                    return func(*args, **kwargs)
-        return []
+                        return func(*args, **kwargs)
+            return []
 
-    return decorated_handler
+        return wrapped_handler
+
+    return decorator
 
 
 def model2dict(model, attr_excl=[]):
