@@ -79,7 +79,8 @@ class APIHandlers(object):
 
                 if need_update:
                     db.session.commit()
-                    clothes = [model2dict(clothe) for clothe in user.clothes if clothe.id in [x['id'] for x in n_clothes]]
+                    clothes = [model2dict(clothe) for clothe in user.clothes if
+                               clothe.id in [x['id'] for x in n_clothes]]
                     return [200, ('msg', "Clothes's data is updated"), ('clothes', clothes)]
 
         return []
