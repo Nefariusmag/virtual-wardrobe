@@ -98,14 +98,14 @@ class User(UserMixin, db.Model):
     class UserToken(db.Model):
         __tablename__ = 'user_tokens'
         id = db.Column(db.Integer, primary_key=True)
-        user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+        username = db.Column(db.String(64), db.ForeignKey('users.username'))
         token = db.Column(db.String(16), unique=True)
         type = db.Column(db.Integer)
         issue = db.Column(db.DateTime, default=datetime.datetime.utcnow)
         expire = db.Column(db.DateTime)
 
-        def __init__(self, user_id, token_type='user', token_expire=datetime.datetime(2099, 1, 1, 0, 0, 0)):
-            self.user_id = user_id
+        def __init__(self, username, token_type='user', token_expire=datetime.datetime(2099, 1, 1, 0, 0, 0)):
+            self.username = username
             self.type = token_type
             self.expire = token_expire
 
