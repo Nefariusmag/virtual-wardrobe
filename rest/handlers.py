@@ -1,3 +1,4 @@
+from inspect import getargspec
 from rest.utils import token_auth_required, model2dict
 
 from wardrobe import db
@@ -25,6 +26,35 @@ class APIHandlers(object):
             return handler_response
         return []
 
+    @token_auth_required(['service', 'admin'])
+    def handler_new_user(self):
+        if (self.params['method'] == 'POST') and (self.params['data']):
+            mb_user = self.params['data'].get('user', 0)
+            if mb_user.get('password', 0):
+                user_req_args = {}
+                user_req_args_list = getargspec(User).args[1:]
+                for k in user_req_args_list:
+                    if mb_user.get(k, 0) == 0:
+                        return []
+                    user_req_args[k] = mb_user[k]
+
+                if User.query.filter(
+                        (User.username == user_req_args['username']) | (User.email == user_req_args['email'])
+                ).first() is None:
+                    new_user = User(**user_req_args)
+                    new_user.set_user_password(mb_user.get('password'))
+                    new_user.role = db.session.query(UserRole.id).filter(UserRole.role == 'user').first().id
+                    db.session.add(new_user)
+                    db.session.commit()
+                    db.session.add(new_user.UserToken(user_id=new_user.id))
+                    db.session.add(new_user.UserToken(user_id=new_user.id, token_type='totp'))
+                    db.session.commit()
+                    return [200, ('user', model2dict(new_user))]
+            else:
+                return []
+
+        return []
+
     @token_auth_required()
     def handler_user(self):
         user = User.query.filter(User.id == self.params['uid']).first()
@@ -39,11 +69,9 @@ class APIHandlers(object):
                 need_update = 0
                 for k, v in self.params['data'].items():
                     cv = getattr(user, k, 0)
-                    if cv and (k not in ['id', 'username']):
+                    if cv and (k not in ['id', 'username', 'password']):
                         setattr(user, k, v)
                         need_update = 1
-                    else:
-                        break
 
                 if need_update:
                     db.session.commit()
