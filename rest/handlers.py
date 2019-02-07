@@ -45,9 +45,8 @@ class APIHandlers(object):
                     new_user.set_user_password(mb_user.get('password'))
                     new_user.role = db.session.query(UserRole.id).filter(UserRole.role == 'user').first().id
                     db.session.add(new_user)
-                    db.session.commit()
-                    db.session.add(new_user.UserToken(user_id=new_user.id))
-                    db.session.add(new_user.UserToken(user_id=new_user.id, token_type='totp'))
+                    db.session.add(new_user.UserToken(username=new_user.username))
+                    db.session.add(new_user.UserToken(username=new_user.username, token_type='totp'))
                     db.session.commit()
                     return [200, ('user', model2dict(new_user))]
             else:

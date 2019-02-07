@@ -17,11 +17,17 @@ def token_auth_required(auth_roles=[]):
                 mb_token = hnd_params.pop('token', 0)
 
                 if mb_token:
-                    uid = getattr(
+                    un = getattr(
                         User.UserToken.query.filter(
                             (User.UserToken.token == mb_token) & (User.UserToken.type == 'user')
                         ).first(),
-                        'user_id', 0)
+                        'username', 0
+                    )
+                    uid = getattr(
+                        User.query.filter(User.username == un).first(),
+                        'id',
+                        0
+                    )
                     if uid:
                         uid_user = User.query.filter(User.id == uid).first()
                         uid_user_role = getattr(UserRole.query.filter(UserRole.id == uid_user.role).first(), 'role', '')
