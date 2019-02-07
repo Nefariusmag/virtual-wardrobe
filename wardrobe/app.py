@@ -174,7 +174,7 @@ def create_app():
                     photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             except:
                 filename = ''
-            if clothes_name and type and temp_max and temp_min and temp_max >= temp_min:
+            if clothes_name and type and temp_max >= temp_min:
                 new_clothes = Clothes(user_id, clothes_name, type, temp_min, temp_max, filename)
                 db.session.add(new_clothes)
                 db.session.commit()

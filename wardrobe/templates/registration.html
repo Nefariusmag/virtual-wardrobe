@@ -13,7 +13,7 @@
 <body>
 <h1><span class="black_background">{{ _(' Registration ') }}</span></h1>
 
-{{ _('Write your name and password or ') }}<a href="/">{{ _('go back') }}</a>
+{{ _('Create new person or ') }}<a href="/">{{ _('go back') }}</a>
 
 <form action="" method="post" class="form_size">
     <input type=text name=username placeholder="{{ _('Enter username') }}"><br/>
@@ -22,7 +22,7 @@
     {% endif %}
     <input type=password name=password placeholder="{{ _('Enter password') }}"><br/>
     <input type=submit value="{{ _('Add user') }}">
-    <input type="reset">
+    <input type="reset" value={{ _('Clean') }}>
 </form>
 
 <!--<img src="static/photos/1007152208.jpg">-->

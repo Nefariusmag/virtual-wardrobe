@@ -25,9 +25,8 @@
         <div class="column_central">
             <h1>{{ _('Our ') }}<span class="black_background">{{ _(' advice ') }}</span></h1>
             <a href="/add_clothes">{{ _('Add new clothes') }}</a><br/>
-            {% if list_clothes != [] and list_clth_types != [] %}
             <form action="" method="post" class="form_size">
-                You can select a look for you self <br/>
+                {{ _('Select a look for you self ') }}<br/>
                 <select name=type_look>
                     <option value="all">All</option>
                     <option value="red">Red</option>
@@ -36,47 +35,46 @@
                 </select>
                 <input type=submit value="Select look">
             </form> <br/>
-
-                    <table class="table" >
-                        <thead>
-                        <tr>
-                            <th scope="col">{{ _('Type') }}</th>
-                            <th scope="col">{{ _('Name') }}</th>
-                            <th scope="col">{{ _('Photo') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody class="tbody_central">
-                        {% for clth_type in list_clth_types %}
-                            <tr>
-                                <th scope="row">{{ _(clth_type.desc) }}</th>
-                                <td>
-                                    {% for clothes in list_clothes %}
-                                        {% if clothes.clth_type == clth_type.id %}
-                                            {{ clothes.name }}<br/>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    {% for clothes in list_clothes %}
-                                        {% if clothes.clth_type == clth_type.id %}
-                                            <img src="static/photos/{{ clothes.file_path }}" alt="{{ clothes.name }}" width="200" height="200"><br/>
-                                        {% endif %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-
-            {% else %}
-                {{ _('You haven\'t clothes in the wardrobe.') }}
-            {% endif %}
         </div>
     {% else %}
         {{ _('Now, it can\'t work') }}
     {% endif %}
 </div>
-
+<div style = "clear:both;"></div>
+{% if list_clothes != [] and list_clth_types != [] %}
+    <table >
+        <thead>
+        <tr>
+            <th scope="col">{{ _('Type') }}</th>
+            <th scope="col">{{ _('Name') }}</th>
+            <th scope="col">{{ _('Photo') }}</th>
+        </tr>
+        </thead>
+        <tbody class="tbody_central">
+        {% for clth_type in list_clth_types %}
+            <tr>
+                <th scope="row">{{ _(clth_type.desc) }}</th>
+                <td>
+                    {% for clothes in list_clothes %}
+                        {% if clothes.clth_type == clth_type.id %}
+                            {{ clothes.name }}<br/>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for clothes in list_clothes %}
+                        {% if clothes.clth_type == clth_type.id %}
+                            <img src="static/photos/{{ clothes.file_path }}" alt="{{ clothes.name }}" width="800" height="800"><br/>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ _('You haven\'t clothes in the wardrobe.') }}
+{% endif %}
 <!--
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
