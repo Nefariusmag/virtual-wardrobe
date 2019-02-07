@@ -22,8 +22,11 @@ def add_clothes_start(bot, update, user_data):
 def add_clothes_get_name(bot, update, user_data):
     clth_name = update.message.text
     user_data["add_clothes_name"] = clth_name
-
-    reply_keyboard = [["headdress", "outerwear", "underwear", "footwear", "scarf", "socks", "gloves", "pants", "shirt_sweaters"]]
+    reply_keyboard = [
+        ["headdress", "outerwear", "underwear"],
+        ["footwear", "scarf", "socks", "gloves"],
+        ["pants", "shirt_sweaters"]
+    ]
     update.message.reply_text(
         # TODO add translate
         "Write clothes type of new clothes",
@@ -112,7 +115,15 @@ def dontknow(bot, update, user_data):
 
 
 def get_help(bot, update):
-    text = 'I can this:\n /start\n/location <city,country>\n/add or Добавить шмотки\n/get_clothes\n/help'
+    # TODO add translate
+    text = '''Our bot can help to create your virtual wardrobe and give an advice - what to wear today  
+I can this: 
+/start for registration new user 
+/location or "Сменить локацию" for change your city or country 
+/add or "Добавить шмотки" for add new clothes 
+/get <red|green|blue> for get all your clothes or some look (red, green, blue)  
+/reminder <time> for create schedule
+/help for get this message'''
     update.message.reply_text(text)
 
 
@@ -132,10 +143,10 @@ def registration_user(bot, update):
             db.session.add(new_user)
             db.session.commit()
             # TODO add translate
-            update.message.reply_text(f'You user {username} add in system, your password for website {password}')
+            update.message.reply_text(f'You user "{username}" add in system, your password for website "{password}"')
         else:
             # TODO add translate
-            update.message.reply_text(f'You user {username} already in system.')
+            update.message.reply_text(f'You user "{username}" already in system.')
 
 
 def get_clothes(bot, update):
@@ -148,7 +159,8 @@ def get_clothes(bot, update):
         try:
             color = update.message.text.split(' ')[1]
             if color not in ['red', 'green', 'blue']:
-                update.message.reply_text('Now work only "red", "green", "blue"')
+                color = ''
+                update.message.reply_text('Now work only "red", "green", "blue", so I get you all your wardrobe')
         except:
             color = ''
         if color == '':
@@ -192,6 +204,7 @@ def change_location_get_location(bot, update):
         location = geolocator.reverse(f'{update.message.location.latitude}, {update.message.location.longitude}')
         new_location = f'{location.raw["address"]["state"]},{location.raw["address"]["country"]}'
     else:
+        # TODO check true or false this city
         new_location = update.message.text
     with app.app_context():
         username = update.message.from_user.username

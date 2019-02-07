@@ -12,6 +12,8 @@
 </head>
 
 <body>
+<h1>{{ _('Our web site ')}}<span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' virtual wardrobe ')}}</span>{{ _(' can help you')}} <br/>
+    {{ _('with the answer to the question - what should I wear today')}}</h1>
 <div class="row">
     <div class="column_left">
         <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Login ')}}</span></h1>
@@ -19,7 +21,7 @@
             <input type=text name=username placeholder="{{ _('Enter username') }}"><br/>
             <input type=password name=password placeholder="{{ _('Enter password') }}"><br/>
             <input type=submit value="{{ _('Login') }}">
-            <input type="reset">
+            <input type="reset" value={{ _('Clean') }}>
         </form>
         {% if login_fail %}
         <span style="font-size: medium; color: red; ">{{ _('Login failed') }}</span>
@@ -27,9 +29,8 @@
     </div>
     <div class="column_central">
         <h1><span style="background-color: black; color: white; white-space: pre; line-height: 2;">{{ _(' Registration ') }}</span></h1>
-        {{ _('For registration new user you need go to this link ') }}
-        <a href="/registration">{{ _('registration') }}</a>
-        {{ _(' and do it.') }}
+        {{ _('Just click this ') }}
+        <a href="/registration">{{ _('link') }}</a>
     </div>
 </div>
 <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

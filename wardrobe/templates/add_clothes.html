@@ -14,7 +14,6 @@
 <body>
 <h1>{{ _('Add ') }}<span class="black_background">{{ _(' new ') }}</span>{{ _(' clothes in your wardrobe') }}</h1>
 
-{{ _('Write information about your clothes:') }}<br/><br/>
 <form action="" method="post" class="form_size" enctype=multipart/form-data>
 <table class="table">
   <thead>
@@ -44,14 +43,14 @@
       </td>
       <td><input type=number name=temp_min value="0" placeholder="{{ _('Enter temperature min') }}"></td>
       <td><input type=number name=temp_max value="0" placeholder="{{ _('Enter temperature max') }}"></td>
-      <td><input type=file name=photo></td>
+      <td><input type=file name=photo value={{ _('Select file') }}></td>
     </tr>
   </tbody>
 </table>
     {% if add_clothes_fail %}
     <span class="error_text">{{ _('Write all value') }}</span><br/>
     {% endif %}
-    <input type=submit value="{{ _('Add clothes') }}">    <input type="reset">
+    <input type=submit value="{{ _('Add clothes') }}">    <input type="reset" value={{ _('Clean') }}>
 </form>
 <br/>
 <a href="/"><p style="margin-right: 250px; text-align: right; color: black; text-decoration: underline;">{{ _('Go back') }}<p/></a>

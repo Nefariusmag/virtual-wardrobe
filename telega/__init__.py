@@ -32,6 +32,8 @@ def send_clothes(bot, update, args, job_queue):
         list_schedule_time_int = list(map(int, list_schedule_time_str))
         schedule_time = time(list_schedule_time_int[0], list_schedule_time_int[1])
         # TODO add save in db
+        job_queue.run_daily(start_get_clothes, time=schedule_time, context=update)
+        update.message.reply_text(f'Add your schedule in {list_schedule_time_int[0]}:{list_schedule_time_int[1]}')
         # new_job = job_queue.run_daily(start_get_clothes, time=schedule_time, context=update)
         # my_jobs.append(new_job)
     except (IndexError, ValueError):

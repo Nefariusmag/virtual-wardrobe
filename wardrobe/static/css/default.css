@@ -1,6 +1,6 @@
 body {
     margin-left: 200px;
-    margin-top: 50px;
+    margin-top: 80px;
     font: 18px Inconsolata;
     line-height: 1.5;
     background-color: #F4F5F4;
@@ -53,4 +53,11 @@ thead, tbody { display: block; }
     height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.table {
+    /*width: 1200px;*/
+
+    /*clear: both;*/
+    /*position: absolute;*/
 }
