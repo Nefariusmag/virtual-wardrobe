@@ -144,10 +144,20 @@ def get_clothes(bot, update):
         username = update.message.from_user.username
         user = User.query.filter(User.username == username).first()
         weather = Weather(user.geo, user.lang)
-
         temperature = weather.temp
-        list_clothes = Clothes.query.filter(Clothes.user_id == user.id).filter(
-            Clothes.temperature_min <= temperature).filter(Clothes.temperature_max >= temperature).all()
+        try:
+            color = update.message.text.split(' ')[1]
+            if color not in ['red', 'green', 'blue']:
+                update.message.reply_text('Now work only "red", "green", "blue"')
+        except:
+            color = ''
+        if color == '':
+            list_clothes = Clothes.query.filter(Clothes.user_id == user.id)\
+                .filter(Clothes.temperature_min <= temperature)\
+                .filter(Clothes.temperature_max >= temperature).all()
+        else:
+            from wardrobe.app import get_list_look
+            list_clothes = get_list_look(color, user.id)
 
         # TODO add translate
         text = f'In {user.geo} now {temperature} °C.\n\n'
