@@ -4,18 +4,10 @@ from rest.handlers import APIHandlers
 from rest.utils import token_auth_required
 
 
-def response_wrapper(*args):
-    _resp = {'code': 404, 'body': {}}
-    if args == ():
-        args = (404, ('msg', 'Not found'))
-
-    _resp['code'] = args[0]
-    for block in args[1:]:
-        block_name = block[0]
-        block_data = block[1]
-        _resp['body'][block_name] = block_data
-
-    return json.dumps(_resp)
+def response_wrapper(**kw):
+    if kw.get('code', 0):
+        return json.dumps(kw)
+    return json.dumps(dict(code=500))
 
 
 class WardrobeAPI(object):
@@ -33,4 +25,4 @@ class WardrobeAPI(object):
     def response(self):
         handler = APIHandlers(self.params, self.headers)
         resp = handler()
-        return response_wrapper(*resp)
+        return response_wrapper(**resp)

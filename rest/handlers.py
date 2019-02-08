@@ -9,6 +9,7 @@ from clothes.models import Clothes
 class APIHandlers(object):
 
     def __init__(self, *args, **kwargs):
+        self.resp = dict(code=404, msg='Not found')
         self.params = {}
         if args:
             for arg in args:
@@ -24,7 +25,7 @@ class APIHandlers(object):
         if handler in handlers_list:
             handler_response = getattr(self, handler)()
             return handler_response
-        return []
+        return self.resp
 
     @token_auth_required(['service', 'admin'])
     def handler_new_user(self):
@@ -35,7 +36,7 @@ class APIHandlers(object):
                 user_req_args_list = getargspec(User).args[1:]
                 for k in user_req_args_list:
                     if mb_user.get(k, 0) == 0:
-                        return []
+                        return self.resp
                     user_req_args[k] = mb_user[k]
 
                 if User.query.filter(
@@ -48,11 +49,14 @@ class APIHandlers(object):
                     db.session.add(new_user.UserToken(username=new_user.username))
                     db.session.add(new_user.UserToken(username=new_user.username, token_type='totp'))
                     db.session.commit()
-                    return [200, ('user', model2dict(new_user))]
-            else:
-                return []
+                    self.resp['code'] = 200
+                    self.resp['msg'] = 'User created'
+                    self.resp['user'] = dict(id=new_user.id)
+                else:
+                    self.resp['code'] = 403
+                    self.resp['msg'] = 'User with this username or email is already exist'
 
-        return []
+        return self.resp
 
     @token_auth_required()
     def handler_user(self):
@@ -61,7 +65,9 @@ class APIHandlers(object):
         if user:
             if self.params['method'] == 'GET':
                 user = model2dict(user, ['id', 'password'])
-                return [200, ('user', user)]
+                self.resp['code'] = 200
+                self.resp['msg'] = 'OK'
+                self.resp['user'] = user
 
             if (self.params['method'] == 'POST') and (self.params['data']):
                 # TODO: Add input validation for each field
@@ -75,9 +81,11 @@ class APIHandlers(object):
                 if need_update:
                     db.session.commit()
                     user = model2dict(user, ['id', 'password'])
-                    return [200, ('msg', "User's data is updated"), ('user', user)]
+                    self.resp['code'] = 200
+                    self.resp['msg'] = 'User updated'
+                    self.resp['user'] = user
 
-        return []
+        return self.resp
 
     @token_auth_required()
     def handler_clothes(self):
@@ -88,7 +96,9 @@ class APIHandlers(object):
                     clothes = [model2dict(clothe) for clothe in user.clothes]
                 else:
                     clothes = []
-                return [200, ('user', user.username), ('clothes', clothes)]
+                self.resp['code'] = 200
+                self.resp['msg'] = 'OK'
+                self.resp['clothes'] = clothes
 
             if (self.params['method'] == 'POST') and (self.params['data']):
                 need_update = 0
@@ -108,6 +118,8 @@ class APIHandlers(object):
                     db.session.commit()
                     clothes = [model2dict(clothe) for clothe in user.clothes if
                                clothe.id in [x['id'] for x in n_clothes]]
-                    return [200, ('msg', "Clothes's data is updated"), ('clothes', clothes)]
+                    self.resp['code'] = 200
+                    self.resp['msg'] = 'Clothes data updated'
+                    self.resp['clothes'] = clothes
 
-        return []
+        return self.resp

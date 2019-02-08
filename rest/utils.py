@@ -10,6 +10,7 @@ def token_auth_required(auth_roles=[]):
         @wraps(func)
         def wrapped_handler(*args, **kwargs):
             hnd_params = getattr(args[0], 'params', {})
+            resp = getattr(args[0], 'resp', {})
             if hnd_params:
                 mb_uid = hnd_params.get('uid', 0)
                 if mb_uid:
@@ -34,19 +35,19 @@ def token_auth_required(auth_roles=[]):
                         hnd_params['init_role'] = uid_user_role
                         if auth_roles:
                             if uid_user_role not in auth_roles:
-                                return []
+                                return resp
                         if mb_uid:
                             if uid_user_role in ['admin', 'service']:
                                 return func(*args, **kwargs)
                             if mb_uid and uid == mb_uid:
                                 return func(*args, **kwargs)
                             else:
-                                return []
+                                return resp
                         else:
                             hnd_params['uid'] = str(uid)
 
                         return func(*args, **kwargs)
-            return []
+            return resp
 
         return wrapped_handler
 
