@@ -1,4 +1,4 @@
-from inspect import getargspec
+from inspect import getfullargspec
 from rest.utils import token_auth_required, model2dict
 
 from wardrobe import db
@@ -30,19 +30,34 @@ class APIHandlers(object):
     @token_auth_required(['service', 'admin'])
     def handler_new_user(self):
         if (self.params['method'] == 'POST') and (self.params['data']):
-            mb_user = self.params['data'].get('user', 0)
-            if mb_user.get('password', 0):
-                user_req_args = {}
-                user_req_args_list = getargspec(User).args[1:]
-                for k in user_req_args_list:
-                    if mb_user.get(k, 0) == 0:
-                        return self.resp
-                    user_req_args[k] = mb_user[k]
+            mb_user = self.params['data']
+            if mb_user.get('password', 0) and mb_user.get('username', 0):
+                new_user_params = {}
+                user_params = getfullargspec(User)
+                user_def_params_list = user_params.args[-len(user_params.defaults):]
+                user_req_params_list = user_params.args[1:-len(user_params.defaults)]
+                self.resp['forms'] = []
+                for k in user_req_params_list:
+                    v = mb_user.get(k, '')
+                    if v:
+                        new_user_params[k] = v
+                        continue
+                    self.resp['forms'].append(k)
+
+                if self.resp['forms']:
+                    self.resp['msg'] = 'Fill in required forms'
+                    return self.resp
+
+                for k in user_def_params_list:
+                    v = mb_user.get(k, '')
+                    new_user_params[k] = v
+
+                self.resp.pop('forms')
 
                 if User.query.filter(
-                        (User.username == user_req_args['username']) | (User.email == user_req_args['email'])
+                        (User.username == new_user_params['username']) | (User.email == new_user_params['email'])
                 ).first() is None:
-                    new_user = User(**user_req_args)
+                    new_user = User(**new_user_params)
                     new_user.set_user_password(mb_user.get('password'))
                     new_user.role = db.session.query(UserRole.id).filter(UserRole.role == 'user').first().id
                     db.session.add(new_user)
