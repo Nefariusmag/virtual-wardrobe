@@ -54,12 +54,16 @@ def token_auth_required(auth_roles=[]):
     return decorator
 
 
-def model2dict(model, attr_excl=[]):
+def model2dict(model, attr_excl=[], attr_only=[]):
     from sqlalchemy import inspect
 
     model_props = []
     for attr in getattr(inspect(model), 'attrs', []):
         if (type(getattr(attr, 'value')) in [str, int, bool]) and attr.key not in attr_excl:
+            if attr_only:
+                if attr.key in attr_only:
+                    model_props.append(attr.key)
+                continue
             model_props.append(attr.key)
     model_dict = {x: getattr(model, x, '') for x in model_props}
 
