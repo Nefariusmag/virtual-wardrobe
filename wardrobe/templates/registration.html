@@ -3,26 +3,38 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/default.css') }}">
-<!--
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
--->
     <title>{{ _(' Registration ') }}</title>
 </head>
 
 <body>
 <h1><span class="black_background">{{ _(' Registration ') }}</span></h1>
 
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error_text">{{ message }}</div></br>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
 {{ _('Create new person or ') }}<a href="/">{{ _('go back') }}</a>
 
 <form action="" method="post" class="form_size">
-    <input type=text name=username placeholder="{{ _('Enter username') }}"><br/>
-    {% if user_exit %}
-    <span class="error_text">{{ _('User exist') }}</span><br/>
-    {% endif %}
-    <input type=password name=password placeholder="{{ _('Enter password') }}"><br/>
+    {{ form.csrf_token }}
+    {% for message in form.username.errors %}
+        <div class="error_text">{{ message }}</div>
+    {% endfor %}
+    {{ form.username(placeholder=_('Enter username')) }}<br/>
+    {% for message in form.password.errors %}
+        <div class="error_text">{{ message }}</div>
+    {% endfor %}
+    {{ form.password(placeholder=_('Enter password')) }}<br/>
+    {% for message in form.email.errors %}
+        <div class="error_text">{{ message }}</div>
+    {% endfor %}
+    {{ form.email(placeholder=_('Enter email')) }}<br/>
     <input type=submit value="{{ _('Add user') }}">
-    <input type="reset" value={{ _('Clean') }}>
 </form>
 
 <!--<img src="static/photos/1007152208.jpg">-->

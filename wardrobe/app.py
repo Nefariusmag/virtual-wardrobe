@@ -1,6 +1,6 @@
 import os, config, datetime
 
-from flask import Flask, abort, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, abort, render_template, request, redirect, url_for, send_from_directory, flash
 from flask_babel import Babel
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
@@ -107,15 +107,19 @@ def create_app():
 
     @app.route('/registration', methods=['GET', 'POST'])
     def register():
+        from forms import RegisterForm
+        form = RegisterForm()
         if current_user.is_authenticated:
             return redirect('/')
-        if request.method == 'POST':
-            username = request.form['username']
-            password = request.form['password']
-            registered_user = User.query.filter(User.username == username).first()
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            email = form.email.data
+            registered_user = User.query.filter((User.username == username) | (User.email == email)).first()
             if registered_user is None:
                 new_user = User(username)
                 new_user.set_user_password(password)
+                new_user.email = email
                 new_user.role = db.session.query(UserRole.id).filter(UserRole.role == 'user').first().id
                 db.session.add(new_user)
                 db.session.add(new_user.UserToken(username=new_user.username))
@@ -123,9 +127,10 @@ def create_app():
                 db.session.commit()
                 return redirect('/')
             else:
-                return render_template('registration.html', user_exit=True)
-        else:
-            return render_template('registration.html')
+                flash('User is already exist', 'error')
+
+        return render_template('registration.html', form=form)
+
 
     @app.route('/location', methods=['GET', 'POST'])
     @login_required
