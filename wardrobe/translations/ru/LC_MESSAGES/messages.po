@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-01-19 12:25+0300\n"
+"POT-Creation-Date: 2019-02-09 11:36+0300\n"
 "PO-Revision-Date: 2018-12-26 20:48+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: wardrobe/templates/add_clothes.html:11 wardrobe/templates/index.html:54
+#: wardrobe/templates/add_clothes.html:11 wardrobe/templates/index.html:27
 msgid "Add new clothes"
 msgstr "Добавление новой шмотки"
 
@@ -35,25 +35,25 @@ msgstr " новую "
 msgid " clothes in your wardrobe"
 msgstr " шмотку в твой гардероб"
 
-#: wardrobe/templates/add_clothes.html:17
-msgid "Write information about your clothes:"
-msgstr "Напишите информацию о вашей шмотке:"
-
-#: wardrobe/templates/add_clothes.html:22
+#: wardrobe/templates/add_clothes.html:21 wardrobe/templates/index.html:49
 msgid "Name"
 msgstr "Название"
 
-#: wardrobe/templates/add_clothes.html:23
+#: wardrobe/templates/add_clothes.html:22 wardrobe/templates/index.html:48
 msgid "Type"
 msgstr "Тип"
 
-#: wardrobe/templates/add_clothes.html:24
+#: wardrobe/templates/add_clothes.html:23
 msgid "Temperature Min"
 msgstr "Минимальная температура"
 
-#: wardrobe/templates/add_clothes.html:25
+#: wardrobe/templates/add_clothes.html:24
 msgid "Temperature Max"
 msgstr "Максимальная температура"
+
+#: wardrobe/templates/add_clothes.html:25 wardrobe/templates/index.html:50
+msgid "Photo"
+msgstr "Фото"
 
 #: wardrobe/templates/add_clothes.html:30
 msgid "Enter clothes name"
@@ -103,17 +103,26 @@ msgstr "Введите минимальную температуру"
 msgid "Enter temperature max"
 msgstr "Введите максимальную температуру"
 
-#: wardrobe/templates/add_clothes.html:50
-msgid "Write all value"
-msgstr "Все поля должны быть заполнены"
+#: wardrobe/templates/add_clothes.html:46
+msgid "Select file"
+msgstr "Выберите файл"
 
-#: wardrobe/templates/add_clothes.html:52
+#: wardrobe/templates/add_clothes.html:51
+msgid "Write all value"
+msgstr "Все поля должны быть заполнены корректно"
+
+#: wardrobe/templates/add_clothes.html:53
 msgid "Add clothes"
 msgstr "Добавить шмотку"
 
-#: wardrobe/templates/add_clothes.html:55
+#: wardrobe/templates/add_clothes.html:53 wardrobe/templates/login.html:24
+#: wardrobe/templates/registration.html:25
+msgid "Clean"
+msgstr "Очистить"
+
+#: wardrobe/templates/add_clothes.html:56
 msgid "Go back"
-msgstr "Вернуться назад"
+msgstr "Вернись назад"
 
 #: wardrobe/templates/index.html:12
 msgid "Virtual wardrobe"
@@ -147,21 +156,17 @@ msgstr "Наш "
 msgid " advice "
 msgstr " совет "
 
-#: wardrobe/templates/index.html:31
-msgid "Type Clothes"
-msgstr "Тип шмотки"
+#: wardrobe/templates/index.html:29
+msgid "Select a look for you self "
+msgstr "Выберите лук для себя "
 
-#: wardrobe/templates/index.html:32
-msgid "Name clothes"
-msgstr "Имя шмотки"
-
-#: wardrobe/templates/index.html:51
-msgid "You haven't clothes in the wardrobe."
-msgstr "У вас нету шмоток в гардеробе."
-
-#: wardrobe/templates/index.html:58
+#: wardrobe/templates/index.html:40
 msgid "Now, it can't work"
 msgstr "Сейчас это не работает"
+
+#: wardrobe/templates/index.html:76
+msgid "You haven't clothes in the wardrobe."
+msgstr "У вас нету шмоток в гардеробе."
 
 #: wardrobe/templates/location.html:11 wardrobe/templates/location.html:15
 msgid " Location "
@@ -187,46 +192,58 @@ msgstr "Введите страну"
 msgid "Change"
 msgstr "Изменить место"
 
-#: wardrobe/templates/login.html:10 wardrobe/templates/login.html:17
+#: wardrobe/templates/login.html:10 wardrobe/templates/login.html:19
 msgid " Login "
 msgstr " Авторизация "
 
-#: wardrobe/templates/login.html:19 wardrobe/templates/registration.html:19
+#: wardrobe/templates/login.html:15
+msgid "Our web site "
+msgstr "Наш сайт "
+
+#: wardrobe/templates/login.html:15
+msgid " virtual wardrobe "
+msgstr " виртулаьный гардероб "
+
+#: wardrobe/templates/login.html:15
+msgid " can help you"
+msgstr " может помочь вам"
+
+#: wardrobe/templates/login.html:16
+msgid "with the answer to the question - what should I wear today"
+msgstr "с ответом на вопрос - что мне надеть сегодня"
+
+#: wardrobe/templates/login.html:21 wardrobe/templates/registration.html:19
 msgid "Enter username"
 msgstr "Введите логин"
 
-#: wardrobe/templates/login.html:20 wardrobe/templates/registration.html:23
+#: wardrobe/templates/login.html:22 wardrobe/templates/registration.html:23
 msgid "Enter password"
 msgstr "Введите пароль"
 
-#: wardrobe/templates/login.html:21
+#: wardrobe/templates/login.html:23
 msgid "Login"
 msgstr "Вход"
 
-#: wardrobe/templates/login.html:25
+#: wardrobe/templates/login.html:27
 msgid "Login failed"
 msgstr "Авторизация не удачная"
 
-#: wardrobe/templates/login.html:29 wardrobe/templates/registration.html:10
+#: wardrobe/templates/login.html:31 wardrobe/templates/registration.html:10
 #: wardrobe/templates/registration.html:14
 msgid " Registration "
 msgstr " Регистрация "
 
-#: wardrobe/templates/login.html:30
-msgid "For registration new user you need go to this link "
-msgstr "Для регистрации нового юзера вам надо нажать на эту ссылку "
-
-#: wardrobe/templates/login.html:31
-msgid "registration"
-msgstr "регистрация"
-
 #: wardrobe/templates/login.html:32
-msgid " and do it."
-msgstr " и сделать это."
+msgid "Just click this "
+msgstr "Просто кликни эту "
+
+#: wardrobe/templates/login.html:33
+msgid "link"
+msgstr "ссылку"
 
 #: wardrobe/templates/registration.html:16
-msgid "Write your name and password or "
-msgstr "Введите ваш логин и пароль или "
+msgid "Create new person or "
+msgstr "Создай нового пользователя или "
 
 #: wardrobe/templates/registration.html:21
 msgid "User exist"
@@ -235,4 +252,5 @@ msgstr "Пользователь существует"
 #: wardrobe/templates/registration.html:24
 msgid "Add user"
 msgstr "Добавить пользователя"
+
 
