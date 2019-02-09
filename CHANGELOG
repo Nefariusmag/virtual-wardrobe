@@ -1,3 +1,14 @@
+# 1.0.5
+
+Create:
+1. Create token for flask
+2. Get dominate RGB from image
+3. Add select clothes with dominate color `red`, `green`, `blue`
+4. Add schedule in telegram (without db)
+5. Fix bug when user add clothes with `null`
+6. Add text in telegram and flask
+7, Fix name save file of image
+
 # 1.0.4
 
 Create:

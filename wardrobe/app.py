@@ -170,7 +170,7 @@ def create_app():
             try:
                 photo_file = request.files['photo']
                 if allowed_file(photo_file.filename):
-                    filename = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")}.jpg'
+                    filename = f'{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.jpg'
                     photo_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             except:
                 filename = ''
