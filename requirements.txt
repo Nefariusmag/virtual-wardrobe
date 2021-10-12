@@ -29,7 +29,7 @@ MarkupSafe==1.1.0
 matplotlib==3.0.2
 more-itertools==5.0.0
 numpy==1.16.0
-opencv-python==4.0.0.21
+opencv-python==4.2.0.32
 passlib==1.7.1
 Pillow==5.4.1
 pluggy==0.8.0
